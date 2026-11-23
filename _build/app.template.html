@@ -1,0 +1,4011 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JS Playground · 本地离线</title>
+<style>
+/*__CM_CSS__*/
+/*__HINT_CSS__*/
+/*__DIALOG_CSS__*/
+/*__FOLDGUTTER_CSS__*/
+:root{
+  --bg:#ffffff;
+  --bg-soft:#f6f7f9;
+  --bg-panel:#fbfbfc;
+  --line:#e4e6eb;
+  --line-strong:#d3d7de;
+  --line-hover:#c3c8d1;
+  --text:#1f2328;
+  --muted:#697180;
+  --faint:#9aa1ab;
+  --accent:#185fa5;
+  --accent-dark:#124a80;
+  --warn:#854f0b;
+  --err:#a32d2d;
+  --surface:#ffffff;
+  --btn-active:#eef0f4;
+  --chip-bg:#f0f2f5;
+  --tip-bg:#1f2328;
+  --tip-text:#ffffff;
+  --row-line:#f1f2f4;
+  --warn-bg:#fdf8ec;
+  --err-bg:#fdf1f1;
+  --sys-bg:#f4f7fc;
+  --sel:#d8e7f8;
+  --sel-focus:#cfe1f7;
+  --activeline:#f4f8fd;
+  --gutter-num:#b3b9c4;
+  --hint-active:#e8f0fb;
+  --ok-text:#12805f;
+  --lint-err:#c0392b;
+  --snippet:#0f6e56;
+  --error-line:#fdeaea;
+  --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  --sans:system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;
+}
+html[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#161a20;
+  --bg-soft:#1b2028;
+  --bg-panel:#151920;
+  --line:#272d38;
+  --line-strong:#333b48;
+  --line-hover:#414a5a;
+  --text:#dfe4ec;
+  --muted:#9aa3b2;
+  --faint:#6d7787;
+  --accent:#6cb0f5;
+  --accent-dark:#9ccbff;
+  --warn:#e2b567;
+  --err:#f0918f;
+  --surface:#1c222b;
+  --btn-active:#242b36;
+  --chip-bg:#242a34;
+  --tip-bg:#e4e9f1;
+  --tip-text:#161a20;
+  --row-line:#222833;
+  --warn-bg:#2a2418;
+  --err-bg:#2c1c1e;
+  --sys-bg:#1a2230;
+  --sel:#2a3f57;
+  --sel-focus:#33506e;
+  --activeline:#1b2129;
+  --gutter-num:#4e5768;
+  --hint-active:#22354c;
+  --ok-text:#4fc08d;
+  --lint-err:#ff9a9a;
+  --snippet:#4fc08d;
+  --error-line:#33201f;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:var(--sans);
+  font-size:13px;
+  color:var(--text);
+  background:var(--bg);
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+.topbar{
+  flex:0 0 46px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:0 14px;
+  border-bottom:1px solid var(--line);
+  background:var(--bg);
+}
+.brand{
+  display:flex;
+  align-items:baseline;
+  gap:8px;
+  margin-right:6px;
+  user-select:none;
+  white-space:nowrap;
+  flex:0 0 auto;
+}
+.brand b{font-size:14px;font-weight:500;letter-spacing:.2px}
+.brand span{font-size:11.5px;color:var(--faint)}
+.btn{
+  height:28px;
+  padding:0 12px;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  border:1px solid var(--line-strong);
+  border-radius:7px;
+  background:var(--surface);
+  color:var(--text);
+  font-family:var(--sans);
+  font-size:12.5px;
+  cursor:pointer;
+  transition:background .12s,border-color .12s;
+  white-space:nowrap;
+}
+.btn:hover{background:var(--bg-soft);border-color:var(--line-hover)}
+.btn:active{background:var(--btn-active)}
+.btn.primary{
+  background:var(--accent);
+  border-color:var(--accent);
+  color:#fff;
+}
+.btn.primary:hover{background:var(--accent-dark);border-color:var(--accent-dark)}
+.btn.primary:active{background:#0f3f6d}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+kbd{
+  font-family:var(--mono);
+  font-size:10.5px;
+  padding:1px 5px;
+  border-radius:4px;
+  background:rgba(255,255,255,.18);
+  border:1px solid rgba(255,255,255,.28);
+  line-height:1.4;
+}
+.btn:not(.primary) kbd{background:var(--chip-bg);border-color:var(--line);color:var(--muted)}
+html[data-theme="dark"] .btn.primary{color:#0f1620;font-weight:500}
+html[data-theme="dark"] .btn.primary:hover{background:#8ec4ff;border-color:#8ec4ff}
+.btn-gap{width:1px;height:18px;background:var(--line-strong);margin:0 2px;flex:0 0 auto}
+.spacer{flex:1 1 auto}
+.save-state{
+  font-size:11.5px;
+  color:var(--faint);
+  font-variant-numeric:tabular-nums;
+  white-space:nowrap;
+}
+main{
+  flex:1 1 auto;
+  min-height:0;
+  display:grid;
+  grid-template-columns:1fr 5px 38%;
+}
+.pane{
+  min-width:0;
+  min-height:0;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  background:var(--bg);
+}
+.pane-head{
+  flex:0 0 30px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 12px;
+  border-bottom:1px solid var(--line);
+  background:var(--bg-soft);
+  font-size:11.5px;
+  color:var(--muted);
+  user-select:none;
+  letter-spacing:.2px;
+}
+.pane-head .dim{color:var(--faint)}
+.pane-btn{
+  position:relative;
+  height:20px;
+  padding:0 7px;
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  border:1px solid var(--line-strong);
+  border-radius:5px;
+  background:var(--surface);
+  color:var(--muted);
+  font-family:var(--sans);
+  font-size:11px;
+  cursor:pointer;
+  transition:background .12s,color .12s,border-color .12s;
+}
+.pane-btn:hover{color:var(--text);border-color:var(--line-hover)}
+.pane-btn:active{background:var(--btn-active)}
+.pane-btn kbd{
+  font-family:var(--mono);
+  font-size:9.5px;
+  padding:0 3px;
+  border-radius:3px;
+  background:var(--chip-bg);
+  border:1px solid var(--line);
+  color:var(--faint);
+  line-height:1.5;
+}
+.head-tools{display:flex;align-items:center;gap:10px}
+[data-tip]{position:relative}
+[data-tip]:hover::after{
+  content:attr(data-tip);
+  position:absolute;
+  top:calc(100% + 7px);
+  left:50%;
+  transform:translateX(-50%);
+  padding:4px 8px;
+  border-radius:6px;
+  background:var(--tip-bg);
+  color:var(--tip-text);
+  font-size:11px;
+  font-weight:400;
+  line-height:1.5;
+  white-space:nowrap;
+  pointer-events:none;
+  box-shadow:0 6px 18px rgba(16,24,40,.2);
+  z-index:200;
+}
+.statusbar [data-tip]:hover::after{top:auto;bottom:calc(100% + 7px)}
+/* 编辑区标题栏的按钮贴着右边界，气泡改成右对齐，不然会被 .pane 的 overflow:hidden 裁掉。
+   width:max-content 不能省：绝对定位元素在窄按钮里做 shrink-to-fit，宽度会被
+   包含块压到按钮宽度，长提示就折成竖排单字了。 */
+.pane-head [data-tip]:hover::after{
+  left:auto;
+  right:0;
+  transform:none;
+  width:max-content;
+  max-width:min(300px,72vw);
+  white-space:normal;
+  text-align:left;
+}
+/* 帮助按钮站在标题栏最左边，气泡得往右展开，右对齐会溢出到 pane 外被裁掉 */
+.pane-head #helpBtn[data-tip]:hover::after{left:0;right:auto}
+.editor-wrap{flex:1 1 auto;min-height:0;position:relative}
+.editor-wrap .CodeMirror{position:absolute;inset:0;height:auto}
+.splitter{
+  cursor:col-resize;
+  background:var(--line);
+  transition:background .12s;
+}
+.splitter:hover,.splitter.dragging{background:var(--line-hover)}
+.console-pane{background:var(--bg-panel)}
+/* 模拟页面：把目标网页的静态 DOM 喂给沙箱，代码才有东西可查 */
+.pane-btn.is-on{
+  color:var(--accent);
+  border-color:var(--accent);
+  background:var(--hint-active);
+}
+.mock-panel{
+  flex:0 0 auto;
+  display:none;
+  flex-direction:column;
+  gap:6px;
+  padding:7px 10px 9px;
+  border-bottom:1px solid var(--line);
+  background:var(--bg-soft);
+}
+.mock-panel.open{display:flex}
+.mock-head{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:11px;
+  color:var(--muted);
+  user-select:none;
+}
+.mock-head .t{font-weight:600;color:var(--text);letter-spacing:.2px;flex:0 0 auto}
+.mock-head .sub{
+  flex:1 1 auto;
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  color:var(--faint);
+}
+.mock-head .sub b{color:var(--accent);font-weight:600}
+.mock-act{
+  flex:0 0 auto;
+  height:18px;
+  padding:0 6px;
+  border:1px solid var(--line-strong);
+  border-radius:5px;
+  background:var(--surface);
+  color:var(--muted);
+  font-family:var(--sans);
+  font-size:10.5px;
+  line-height:1;
+  cursor:pointer;
+  transition:color .12s,border-color .12s;
+}
+.mock-act:hover{color:var(--text);border-color:var(--line-hover)}
+.mock-code{
+  width:100%;
+  height:min(20vh,150px);
+  min-height:62px;
+  resize:vertical;
+  padding:7px 9px;
+  border:1px solid var(--line-strong);
+  border-radius:7px;
+  background:var(--surface);
+  color:var(--text);
+  font-family:var(--mono);
+  font-size:11.5px;
+  line-height:1.6;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  overflow:auto;
+  outline:none;
+  box-sizing:border-box;
+  tab-size:2;
+}
+.mock-code:focus{border-color:var(--accent);box-shadow:0 0 0 2px var(--sel-focus)}
+.mock-code::placeholder{color:var(--faint);white-space:pre-wrap}
+.console-body{
+  flex:1 1 auto;
+  min-height:0;
+  overflow:auto;
+  padding-bottom:8px;
+}
+/* REPL 输入条：像 DevTools 一样，跑完还能接着敲表达式 */
+.repl-bar{
+  flex:0 0 auto;
+  display:flex;
+  align-items:center;
+  gap:7px;
+  padding:5px 10px;
+  border-top:1px solid var(--line);
+  background:var(--bg-soft);
+}
+.repl-prompt{
+  flex:0 0 auto;
+  color:var(--accent);
+  font-family:var(--mono);
+  font-size:14px;
+  line-height:1;
+  user-select:none;
+  padding-top:1px;
+}
+.repl-input{
+  flex:1 1 auto;
+  min-width:0;
+  height:23px;
+  padding:0 8px;
+  border:1px solid var(--line-strong);
+  border-radius:5px;
+  background:var(--surface);
+  color:var(--text);
+  font-family:var(--mono);
+  font-size:11.5px;
+  outline:none;
+  transition:border-color .12s,box-shadow .12s;
+}
+.repl-input:focus{border-color:var(--accent);box-shadow:0 0 0 2px var(--sel-focus)}
+.repl-input::placeholder{color:var(--faint);font-family:var(--sans)}
+.repl-input:disabled{opacity:.55;cursor:not-allowed}
+.console-hint{
+  padding:18px 14px;
+  color:var(--faint);
+  font-size:12px;
+  line-height:1.9;
+}
+.out-line{
+  display:flex;
+  gap:8px;
+  padding:5px 12px;
+  border-bottom:1px solid var(--row-line);
+  font-family:var(--mono);
+  font-size:12.5px;
+  line-height:1.6;
+  white-space:pre-wrap;
+  word-break:break-word;
+}
+.out-line .mark{
+  flex:0 0 auto;
+  color:var(--faint);
+  user-select:none;
+  font-size:11px;
+  padding-top:2px;
+}
+.out-line .body{flex:1 1 auto;min-width:0}
+.out-line.warn{background:var(--warn-bg)}
+.out-line.warn .mark{color:var(--warn)}
+.out-line.error{background:var(--err-bg)}
+.out-line.error .mark,.out-line.error .body{color:var(--err)}
+.out-line.sys{background:var(--sys-bg)}
+.out-line.sys .mark{color:var(--accent)}
+.out-line.sys .body{color:var(--accent);font-family:var(--sans)}
+/* REPL 输入与求值结果：› 是敲进去的，‹ 是返回的 */
+.out-line.repl{background:var(--bg-soft);border-bottom:none;padding-top:2px;padding-bottom:2px}
+.out-line.repl .mark{color:var(--accent);font-size:14px;line-height:1.3}
+.out-line.repl .body{font-weight:500}
+.out-line.repl.in .mark{color:var(--faint);font-size:13px}
+.out-line.repl.in .body{color:var(--muted);font-weight:400}
+.out-line.repl.err{background:var(--err-bg)}
+.out-line.repl.err .mark,
+.out-line.repl.err .body{color:var(--err)}
+.out-line.repl.err .body{font-weight:400}
+.out-line.is-link{cursor:pointer}
+.out-line.is-link:hover{filter:brightness(.97)}
+html[data-theme="dark"] .out-line.is-link:hover{filter:brightness(1.12)}
+.out-line .jump{
+  flex:0 0 auto;
+  align-self:flex-start;
+  margin-top:1px;
+  padding:1px 7px;
+  border-radius:9px;
+  border:1px solid currentColor;
+  font-family:var(--sans);
+  font-size:10.5px;
+  opacity:.75;
+  white-space:nowrap;
+}
+.out-line.is-link:hover .jump{opacity:1}
+.statusbar{
+  flex:0 0 26px;
+  display:flex;
+  align-items:center;
+  gap:18px;
+  padding:0 14px;
+  border-top:1px solid var(--line);
+  background:var(--bg-soft);
+  font-size:11.5px;
+  color:var(--muted);
+  font-variant-numeric:tabular-nums;
+  user-select:none;
+}
+.statusbar .sep{color:var(--line-strong)}
+.dot{
+  width:6px;height:6px;border-radius:50%;
+  background:#9aa1ab;
+  display:inline-block;
+  margin-right:6px;
+  vertical-align:1px;
+}
+.dot.busy{background:#ba7517}
+.dot.ok{background:#1d9e75}
+.dot.err{background:#e24b4a}
+.CodeMirror-gutter.lint{width:14px;text-align:center}
+.lint-dot{
+  display:inline-block;
+  width:7px;height:7px;
+  margin-top:2px;
+  border-radius:50%;
+  background:#e24b4a;
+  cursor:help;
+  vertical-align:top;
+}
+.cm-lint-underline{
+  text-decoration:underline wavy #e24b4a;
+  text-decoration-skip-ink:none;
+  -webkit-text-decoration-skip-ink:none;
+  text-underline-offset:2.5px;
+}
+.lint-state{color:var(--ok-text)}
+.lint-state.has-err{
+  color:var(--lint-err);
+  cursor:pointer;
+  text-decoration:underline dotted;
+  text-underline-offset:2.5px;
+}
+.lint-state.has-err:hover{text-decoration-style:solid}
+
+.CodeMirror{
+  font-family:var(--mono);
+  font-size:13.5px;
+  line-height:1.68;
+  background:var(--bg);
+  color:var(--text);
+  padding-top:6px;
+}
+.CodeMirror-gutters{background:var(--bg-soft);border-right:1px solid var(--line)}
+.CodeMirror-linenumber{color:var(--gutter-num);font-size:12px}
+.CodeMirror-cursor{border-left:2px solid var(--accent)}
+.CodeMirror-selected{background:var(--sel)}
+.CodeMirror-focused .CodeMirror-selected{background:var(--sel-focus)}
+.CodeMirror-activeline-background{background:var(--activeline)}
+.CodeMirror-matchingbracket{color:var(--accent-dark);border-bottom:1px solid var(--accent-dark)}
+.CodeMirror-linebackground.cm-error-line{background:var(--error-line);transition:background .3s}
+.CodeMirror-hints{
+  font-family:var(--mono);
+  font-size:12.5px;
+  background:var(--surface);
+  border:1px solid var(--line-strong);
+  border-radius:9px;
+  box-shadow:0 10px 28px rgba(16,24,40,.18);
+  padding:4px;
+  z-index:50;
+}
+.CodeMirror-hint{
+  padding:4px 9px;
+  border-radius:6px;
+  color:var(--text);
+  line-height:1.5;
+}
+li.CodeMirror-hint-active{background:var(--hint-active);color:var(--accent)}
+li.CodeMirror-hint.cm-hint-local{color:var(--accent-dark)}
+li.CodeMirror-hint.cm-hint-snippet{color:var(--snippet);font-weight:500}
+
+/* 折叠栏 */
+.CodeMirror-foldgutter{width:12px}
+.CodeMirror-foldgutter-open,.CodeMirror-foldgutter-folded{color:var(--faint)}
+.CodeMirror-foldgutter-open:hover,.CodeMirror-foldgutter-folded:hover{color:var(--text)}
+.CodeMirror-foldmarker{
+  color:var(--accent);
+  text-shadow:none;
+  font-family:var(--sans);
+  font-size:11px;
+  line-height:1.3;
+  padding:0 6px;
+  border-radius:9px;
+  border:1px solid var(--line-strong);
+  background:var(--bg-soft);
+  margin:0 3px;
+  cursor:pointer;
+}
+.CodeMirror-foldmarker:hover{border-color:var(--accent)}
+
+/* 查找 / 替换面板：右上角浮层，不遮住整行开头 */
+.CodeMirror-dialog{
+  left:auto !important;
+  right:10px !important;
+  width:auto;
+  max-width:calc(100% - 20px);
+  background:var(--bg-soft);
+  color:var(--text);
+  font-family:var(--sans);
+  font-size:12px;
+  padding:6px 10px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  border:1px solid var(--line-strong);
+  border-top:none;
+  border-radius:0 0 9px 9px;
+  box-shadow:0 10px 24px rgba(16,24,40,.16);
+  z-index:16;
+  white-space:nowrap;
+}
+.CodeMirror-dialog-bottom{
+  top:auto;
+  bottom:0;
+  border-top:1px solid var(--line-strong);
+  border-bottom:none;
+  border-radius:9px 9px 0 0;
+}
+.CodeMirror-search-label{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  flex:1 1 auto;
+  min-width:0;
+  white-space:nowrap;
+}
+.CodeMirror-dialog input{
+  flex:1 1 200px;
+  width:auto !important;
+  min-width:0;
+  max-width:300px;
+  font-family:var(--mono);
+  font-size:12px;
+  background:var(--surface);
+  border:1px solid var(--line-strong) !important;
+  border-radius:5px;
+  padding:3px 7px;
+  color:var(--text);
+}
+.CodeMirror-dialog input:focus{border-color:var(--accent) !important;outline:none}
+.CodeMirror-dialog button{
+  font-size:11px;
+  font-family:var(--sans);
+  background:var(--surface);
+  border:1px solid var(--line-strong);
+  border-radius:5px;
+  color:var(--text);
+  padding:1px 7px;
+  cursor:pointer;
+}
+.CodeMirror-dialog button:hover{background:var(--btn-active)}
+.CodeMirror-search-hint{color:var(--faint) !important;font-size:11px;flex:0 0 auto;white-space:nowrap}
+.CodeMirror-search-match{
+  background:rgba(255,196,0,.28);
+  border-radius:2px;
+}
+.cm-searching{background:rgba(255,196,0,.45);border-radius:2px}
+
+/* 查找 / 替换面板（自建，双栏，不依赖 CodeMirror 的两段式对话框） */
+.srch-panel{
+  position:absolute;
+  top:8px;
+  right:16px;
+  z-index:30;
+  width:352px;
+  max-width:calc(100% - 32px);
+  display:none;
+  flex-direction:column;
+  gap:6px;
+  padding:8px;
+  background:var(--surface);
+  border:1px solid var(--line-strong);
+  border-radius:9px;
+  box-shadow:0 12px 30px rgba(16,24,40,.18);
+  font-family:var(--sans);
+  font-size:12px;
+  box-sizing:border-box;
+}
+.srch-panel.open{display:flex}
+/* 编辑区太窄时改为停靠，避免浮层盖住大半个代码区 */
+.srch-panel.docked{
+  position:static;
+  width:auto;
+  max-width:none;
+  margin:8px 10px 0;
+  border-radius:8px;
+  box-shadow:none;
+}
+.srch-row{display:flex;align-items:center;gap:5px;min-width:0}
+.srch-input{
+  flex:1 1 auto;
+  min-width:0;
+  height:25px;
+  padding:0 7px;
+  font-family:var(--mono);
+  font-size:12px;
+  color:var(--text);
+  background:var(--bg-soft);
+  border:1px solid var(--line);
+  border-radius:5px;
+  outline:none;
+  box-sizing:border-box;
+}
+.srch-input:focus{border-color:var(--accent);background:var(--surface)}
+.srch-count{
+  flex:0 0 auto;
+  min-width:44px;
+  text-align:right;
+  color:var(--faint);
+  font-family:var(--mono);
+  font-size:11px;
+  font-variant-numeric:tabular-nums;
+}
+.srch-count.none{color:var(--err)}
+.srch-ico{
+  flex:0 0 auto;
+  width:23px;
+  height:23px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:0;
+  border:1px solid transparent;
+  border-radius:5px;
+  background:transparent;
+  color:var(--muted);
+  font-family:var(--sans);
+  font-size:11px;
+  line-height:1;
+  cursor:pointer;
+}
+.srch-ico:hover{background:var(--btn-active);color:var(--text)}
+.srch-ico.on{background:#e8f0fb;border-color:#c9dcf2;color:var(--accent);font-weight:600}
+.srch-btn{
+  flex:0 0 auto;
+  height:25px;
+  padding:0 9px;
+  border:1px solid var(--line-strong);
+  border-radius:5px;
+  background:var(--bg-soft);
+  color:var(--text);
+  font-family:var(--sans);
+  font-size:11.5px;
+  white-space:nowrap;
+  cursor:pointer;
+}
+.srch-btn:hover{background:var(--btn-active);border-color:#c3c8d1}
+.srch-btn:active{background:#e4e7ec}
+.cm-srch-hit{background:rgba(255,196,0,.34);border-radius:2px}
+html[data-theme="dark"] .srch-ico.on{background:#1e3450;border-color:#2f4d6f;color:#8fc0f0}
+html[data-theme="dark"] .cm-srch-hit{background:rgba(255,196,0,.24)}
+
+/* 同名标识符：当前处 / 代码里的其他出现 / 注释与字符串里的同名词，三档由深到浅。
+   刻意避开蓝色系——编辑器的选区本身就是淡蓝（--sel-focus:#cfe1f7），
+   蓝底高亮混上去和选区几乎同色，用户根本分不清「我选中的」和「其他出现」。 */
+.cm-occ-here{background:rgba(38,146,146,.32);border-radius:2px}
+.cm-occ-hit{background:rgba(56,168,168,.28);border-radius:2px}
+.cm-occ-soft{background:rgba(56,168,168,.13);border-radius:2px}
+html[data-theme="dark"] .cm-occ-here{background:rgba(72,198,198,.42)}
+html[data-theme="dark"] .cm-occ-hit{background:rgba(72,198,198,.28)}
+html[data-theme="dark"] .cm-occ-soft{background:rgba(72,198,198,.13)}
+
+/* 深色主题下的语法着色 */
+html[data-theme="dark"] .cm-s-default .cm-keyword{color:#c792ea}
+html[data-theme="dark"] .cm-s-default .cm-atom{color:#f78c6c}
+html[data-theme="dark"] .cm-s-default .cm-number{color:#f78c6c}
+html[data-theme="dark"] .cm-s-default .cm-def{color:#82aaff}
+html[data-theme="dark"] .cm-s-default .cm-variable{color:#dfe4ec}
+html[data-theme="dark"] .cm-s-default .cm-variable-2{color:#7fdbca}
+html[data-theme="dark"] .cm-s-default .cm-variable-3,
+html[data-theme="dark"] .cm-s-default .cm-type{color:#7fdbca}
+html[data-theme="dark"] .cm-s-default .cm-property{color:#82aaff}
+html[data-theme="dark"] .cm-s-default .cm-operator{color:#89ddff}
+html[data-theme="dark"] .cm-s-default .cm-comment{color:#5f6b7d;font-style:italic}
+html[data-theme="dark"] .cm-s-default .cm-string,
+html[data-theme="dark"] .cm-s-default .cm-string-2{color:#c3e88d}
+html[data-theme="dark"] .cm-s-default .cm-meta,
+html[data-theme="dark"] .cm-s-default .cm-qualifier{color:#8996a8}
+html[data-theme="dark"] .cm-s-default .cm-builtin{color:#ffcb6b}
+html[data-theme="dark"] .cm-s-default .cm-bracket{color:#8f9aab}
+html[data-theme="dark"] .cm-s-default .cm-error{color:#ff8a8a}
+html[data-theme="dark"] .cm-s-default .cm-link{color:#82aaff}
+html[data-theme="dark"] .cm-s-default .cm-tag{color:#7fdbca}
+
+/* 字号控制 */
+.mini{
+  width:18px;height:18px;
+  display:inline-flex;align-items:center;justify-content:center;
+  padding:0;
+  border:1px solid var(--line-strong);
+  border-radius:5px;
+  background:var(--surface);
+  color:var(--muted);
+  font-size:12px;line-height:1;
+  cursor:pointer;
+}
+.mini:hover{color:var(--text);border-color:var(--line-hover)}
+.mini:active{background:var(--btn-active)}
+.statusbar .right{margin-left:auto;display:flex;align-items:center;gap:6px}
+.zoom-val{
+  min-width:26px;
+  text-align:center;
+  font-family:var(--mono);
+  font-size:10.5px;
+  color:var(--faint);
+}
+
+/* 拖放提示 */
+.drop-veil{
+  position:fixed;
+  inset:0;
+  z-index:900;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  background:rgba(16,24,40,.5);
+  font-family:var(--sans);
+  font-size:15px;
+  color:#fff;
+  pointer-events:none;
+}
+.drop-veil.on{display:flex}
+.drop-veil span{
+  padding:16px 30px;
+  border-radius:12px;
+  border:2px dashed rgba(255,255,255,.78);
+  background:rgba(16,24,40,.3);
+}
+/* 转 Bookmark JS 弹窗 */
+.bm-veil{
+  position:fixed;
+  inset:0;
+  z-index:90;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:rgba(16,24,40,.44);
+}
+.bm-veil.open{display:flex}
+.bm-card{
+  width:min(780px,100%);
+  max-height:calc(100vh - 40px);
+  display:flex;
+  flex-direction:column;
+  gap:9px;
+  padding:13px 15px 12px;
+  background:var(--surface);
+  color:var(--text);
+  border:1px solid var(--line-strong);
+  border-radius:12px;
+  box-shadow:0 26px 64px rgba(16,24,40,.42);
+  font-family:var(--sans);
+  font-size:12px;
+  line-height:1.5;
+  box-sizing:border-box;
+  overflow:auto;
+}
+.bm-head{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+.bm-head b{font-size:13.5px;font-weight:600;letter-spacing:.2px}
+.bm-sub{font-size:11.5px;color:var(--faint)}
+.bm-x{
+  margin-left:auto;
+  width:24px;
+  height:24px;
+  flex:0 0 auto;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:0;
+  border:1px solid transparent;
+  border-radius:6px;
+  background:transparent;
+  color:var(--muted);
+  font-family:var(--sans);
+  font-size:13px;
+  line-height:1;
+  cursor:pointer;
+}
+.bm-x:hover{background:var(--btn-active);color:var(--text)}
+.bm-code{
+  width:100%;
+  height:min(26vh,180px);
+  min-height:76px;
+  resize:vertical;
+  padding:9px 11px;
+  border:1px solid var(--line-strong);
+  border-radius:8px;
+  background:var(--bg-soft);
+  color:var(--text);
+  font-family:var(--mono);
+  font-size:11.5px;
+  line-height:1.6;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  overflow:auto;
+  outline:none;
+  box-sizing:border-box;
+}
+.bm-code:focus{border-color:var(--accent)}
+.bm-meta{display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:11.5px;color:var(--muted)}
+.bm-opt{display:inline-flex;align-items:center;gap:5px;cursor:pointer;user-select:none}
+.bm-opt input{margin:0;accent-color:var(--accent)}
+.bm-stat{
+  margin-left:auto;
+  font-family:var(--mono);
+  font-size:11px;
+  color:var(--faint);
+  font-variant-numeric:tabular-nums;
+  white-space:nowrap;
+}
+.bm-foot{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.bm-foot .spacer{min-width:8px}
+.bm-btn{
+  height:27px;
+  padding:0 11px;
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  border:1px solid var(--line-strong);
+  border-radius:7px;
+  background:var(--surface);
+  color:var(--text);
+  font-family:var(--sans);
+  font-size:12px;
+  white-space:nowrap;
+  text-decoration:none;
+  cursor:pointer;
+}
+.bm-btn:hover{background:var(--btn-active);border-color:var(--line-hover)}
+.bm-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.bm-btn.primary:hover{background:var(--accent-dark);border-color:var(--accent-dark)}
+.bm-btn.on{background:var(--hint-active);border-color:var(--accent);color:var(--accent)}
+html[data-theme="dark"] .bm-btn.primary{color:#0f1620;font-weight:500}
+html[data-theme="dark"] .bm-btn.primary:hover{background:#8ec4ff;border-color:#8ec4ff}
+.bm-drag{
+  height:27px;
+  padding:0 11px;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  border:1px dashed var(--accent);
+  border-radius:7px;
+  background:transparent;
+  color:var(--accent);
+  font-family:var(--sans);
+  font-size:12px;
+  white-space:nowrap;
+  text-decoration:none;
+  cursor:grab;
+  user-select:none;
+}
+.bm-drag:hover{background:var(--hint-active)}
+.bm-drag:active{cursor:grabbing}
+.bm-hint{font-size:11px;color:var(--faint);line-height:1.75}
+.bm-hint b{color:var(--muted);font-weight:600}
+.bm-hint code{
+  font-family:var(--mono);
+  font-size:10.5px;
+  padding:0 3px;
+  border-radius:3px;
+  background:var(--chip-bg);
+  border:1px solid var(--line);
+}
+.bm-hint .warnline{color:var(--warn)}
+
+/* 使用说明弹窗 */
+.hp-veil{
+  position:fixed;
+  inset:0;
+  z-index:92;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:rgba(16,24,40,.46);
+}
+.hp-veil.open{display:flex}
+.hp-card{
+  width:min(880px,100%);
+  max-height:calc(100vh - 40px);
+  display:flex;
+  flex-direction:column;
+  background:var(--surface);
+  color:var(--text);
+  border:1px solid var(--line-strong);
+  border-radius:12px;
+  box-shadow:0 26px 64px rgba(16,24,40,.42);
+  font-family:var(--sans);
+  font-size:12.5px;
+  line-height:1.62;
+  overflow:hidden;
+}
+.hp-head{
+  display:flex;
+  align-items:baseline;
+  gap:9px;
+  flex-wrap:wrap;
+  padding:13px 15px 11px;
+  border-bottom:1px solid var(--line);
+}
+.hp-head b{font-size:14px;font-weight:600;letter-spacing:.2px}
+.hp-sub{font-size:11.5px;color:var(--faint)}
+.hp-x{
+  margin-left:auto;
+  width:24px;
+  height:24px;
+  flex:0 0 auto;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:0;
+  border:1px solid transparent;
+  border-radius:6px;
+  background:transparent;
+  color:var(--muted);
+  font-family:var(--sans);
+  font-size:13px;
+  line-height:1;
+  cursor:pointer;
+}
+.hp-x:hover{background:var(--btn-active);color:var(--text)}
+.hp-nav{
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
+  padding:8px 15px;
+  border-bottom:1px solid var(--line);
+  background:var(--bg-soft);
+}
+.hp-nav a{
+  padding:3px 9px;
+  border:1px solid var(--line-strong);
+  border-radius:20px;
+  background:var(--surface);
+  color:var(--muted);
+  font-size:11.5px;
+  line-height:1.5;
+  text-decoration:none;
+  white-space:nowrap;
+  cursor:pointer;
+}
+.hp-nav a:hover{background:var(--hint-active);border-color:var(--accent);color:var(--accent)}
+.hp-body{
+  flex:1 1 auto;
+  min-height:0;
+  overflow:auto;
+  padding:0 15px 14px;
+  overscroll-behavior:contain;
+}
+.hp-body h3{
+  position:sticky;
+  top:0;
+  z-index:1;
+  margin:0 -15px;
+  padding:10px 15px 5px;
+  background:var(--surface);
+  font-size:12px;
+  font-weight:600;
+  letter-spacing:.4px;
+  color:var(--accent);
+}
+.hp-body section{scroll-margin-top:34px}
+.hp-row{
+  display:grid;
+  grid-template-columns:112px 1fr 108px;
+  gap:12px;
+  padding:6px 0;
+  border-bottom:1px dashed var(--line);
+  align-items:start;
+}
+.hp-row:last-child{border-bottom:0}
+.hp-t{font-weight:600;color:var(--text)}
+.hp-d{color:var(--muted)}
+.hp-k{text-align:right;color:var(--faint);font-size:11.5px;white-space:nowrap}
+.hp-k kbd{white-space:nowrap}
+/* 全局 kbd 是给深色主按钮配的白色半透明底，放到白色卡片上等于看不见 */
+.hp-card kbd{
+  background:var(--chip-bg);
+  border-color:var(--line);
+  color:var(--muted);
+}
+.hp-body section:not(:first-child) h3{border-top:1px solid var(--line-strong);margin-top:2px}
+.hp-d code,.hp-note code{
+  font-family:var(--mono);
+  font-size:11px;
+  padding:0 3px;
+  border-radius:3px;
+  background:var(--chip-bg);
+  border:1px solid var(--line);
+  color:var(--text);
+}
+.hp-note{
+  margin:10px 0 4px;
+  padding:9px 11px;
+  border-left:3px solid var(--warn);
+  border-radius:0 7px 7px 0;
+  background:var(--warn-bg);
+  color:var(--muted);
+  font-size:11.5px;
+  line-height:1.75;
+}
+.hp-note b{color:var(--warn);font-weight:600}
+.hp-foot{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:9px 15px;
+  border-top:1px solid var(--line);
+  background:var(--bg-soft);
+  font-size:11.5px;
+  color:var(--faint);
+}
+.hp-foot .spacer{flex:1 1 auto}
+@media (max-width:720px){
+  .hp-row{grid-template-columns:1fr;gap:2px}
+  .hp-k{text-align:left;margin-top:1px}
+  .hp-k:not(:empty)::before{content:"快捷键：";color:var(--faint)}
+  .hp-body{padding:0 12px 12px}
+  .hp-body h3{margin:0 -12px;padding:9px 12px 4px}
+  .hp-nav{padding:7px 12px}
+  .hp-head{padding:11px 12px 9px}
+}
+@media (max-width:1240px){
+  .btn{padding:0 9px}
+  .btn-gap{display:none}
+  .topbar{gap:8px}
+}
+@media (max-width:1180px){
+  .btn{padding:0 8px}
+  .topbar{gap:7px}
+}
+@media (max-width:1000px){
+  .save-state{display:none}
+}
+@media (max-width:940px){
+  .topbar kbd{display:none}
+  .brand span{display:none}
+}
+@media (max-width:880px){
+  .btn{padding:0 7px}
+}
+@media (max-width:760px){
+  .topbar{padding:0 10px;gap:7px}
+  main{grid-template-columns:1fr;grid-template-rows:1fr 5px 40%}
+  .splitter{cursor:row-resize}
+  .pane-head .dim{display:none}
+  .sfx{display:none}
+  .statusbar{gap:12px}
+  .statusbar .opt{display:none}
+  .mock-code{height:min(15vh,104px)}
+}
+@media (max-width:720px){
+  .btn{padding:0 6px}
+  .topbar{gap:6px}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand"><b>JS Playground</b><span>本地离线 · Teddy 出品</span></div>
+  <button class="btn primary" id="runBtn">运行 <kbd>Ctrl+Enter</kbd></button>
+  <button class="btn" id="stopBtn">停止</button>
+  <button class="btn" id="openBtn">打开<span class="sfx"> .js</span></button>
+  <button class="btn" id="saveBtn">保存<span class="sfx"> .js</span></button>
+  <span class="btn-gap"></span>
+  <button class="btn" id="formatBtn" data-tip="重新缩进排版 · Shift+Alt+F">格式化</button>
+  <button class="btn" id="bmBtn" data-tip="转成可直接放进书签的 javascript: 链接 · Alt+Shift+B">转 Bookmark<span class="sfx"> JS</span></button>
+  <button class="btn" id="minifyBtn" data-tip="删除注释与多余空白，安全合并行 · Shift+Alt+M">压缩</button>
+  <span class="btn-gap"></span>
+  <button class="btn" id="commentBtn" data-tip="添加行注释 · Ctrl+/ 可切换">注释</button>
+  <button class="btn" id="uncommentBtn" data-tip="移除行注释 · Ctrl+/ 可切换">取消注释</button>
+  <div class="spacer"></div>
+  <button class="btn" id="themeBtn" data-tip="切换深色 / 浅色主题 · Ctrl+Shift+L">深色</button>
+  <div class="save-state" id="saveState">未保存</div>
+</header>
+
+<main id="main">
+  <section class="pane">
+    <div class="pane-head">
+      <span>script.js</span>
+      <span class="head-tools">
+        <button class="pane-btn" id="helpBtn" data-tip="全部功能与快捷键 · 共 7 组">帮助</button>
+        <button class="pane-btn" id="findBtn" data-tip="查找与替换 · Ctrl+F 查找 / Ctrl+H 替换">查找替换 <kbd>Ctrl+F</kbd></button>
+        <span class="dim">Ctrl+Space 提示 · Ctrl+G 跳行</span>
+      </span>
+    </div>
+    <div class="editor-wrap"><textarea id="code"></textarea></div>
+  </section>
+
+  <div class="splitter" id="splitter"></div>
+
+  <section class="pane console-pane">
+    <div class="pane-head">
+      <span>输出</span>
+      <span class="head-tools">
+        <span class="dim" id="outCount">0 条</span>
+        <button class="pane-btn" id="mockBtn" data-tip="给沙箱喂一段网页结构，代码就有真实 DOM 可操作 · Alt+M">模拟页面</button>
+        <button class="pane-btn" id="clearBtn">清空</button>
+      </span>
+    </div>
+    <div class="mock-panel" id="mockPanel">
+      <div class="mock-head">
+        <span class="t">模拟页面 DOM</span>
+        <span class="sub" id="mockSub">留空则沙箱是空白页</span>
+        <button class="mock-act" id="mockSample">示例</button>
+        <button class="mock-act" id="mockClear">清空 DOM</button>
+      </div>
+      <textarea class="mock-code" id="mockCode" spellcheck="false" placeholder="把目标网页的 HTML 贴进来，运行时 document 就指向这个结构：&#10;&lt;div class=&quot;list&quot;&gt;&lt;span class=&quot;item&quot;&gt;A&lt;/span&gt;&lt;/div&gt;&#10;之后可以直接 document.querySelector('.item')、改 innerHTML、加 style。&#10;贴完整页面（含 &lt;html&gt;/&lt;body&gt;）也可以，会自动取出 body 内容；页面里的 &lt;script&gt; 不会执行。"></textarea>
+    </div>
+    <div class="console-body" id="consoleBody">
+      <div class="console-hint" id="emptyHint">按 <b>Ctrl+Enter</b> 运行代码，跑完还能在下面那行继续求值。</div>
+    </div>
+    <div class="repl-bar">
+      <span class="repl-prompt">›</span>
+      <input class="repl-input" id="replInput" type="text" spellcheck="false" autocomplete="off"
+             placeholder="回车求值 · 先运行一次代码，这里就能用它的变量">
+    </div>
+  </section>
+</main>
+
+<div class="hp-veil" id="helpVeil">
+  <div class="hp-card" role="dialog" aria-modal="true" aria-label="使用说明">
+    <div class="hp-head">
+      <b>使用说明</b>
+      <span class="hp-sub">一个 HTML 文件，双击就能用 · 代码不上传，全在本机浏览器里跑</span>
+      <button class="hp-x" id="helpX" title="关闭（Esc）">✕</button>
+    </div>
+
+    <div class="hp-nav">
+      <a data-go="hp-edit">写代码</a>
+      <a data-go="hp-run">运行</a>
+      <a data-go="hp-repl">控制台求值</a>
+      <a data-go="hp-mock">模拟网页</a>
+      <a data-go="hp-tidy">检查与整理</a>
+      <a data-go="hp-file">文件与导出</a>
+      <a data-go="hp-ui">界面</a>
+    </div>
+
+    <div class="hp-body" id="helpBody">
+
+      <section id="hp-edit">
+        <h3>写代码</h3>
+        <div class="hp-row">
+          <div class="hp-t">语法高亮</div>
+          <div class="hp-d">关键字、字符串、模板、注释、数字各一色；深色主题配了另一套配色，不是简单反色。</div>
+          <div class="hp-k"></div>
+        </div>
+        <div class="hp-row">
+          <div class="hp-t">自动补全</div>
+          <div class="hp-d">边打字边提示。候选来自三处：JS 内置对象、这个文件里声明过的变量、以及下面那五个模板。</div>
+          <div class="hp-k"><kbd>Ctrl+Space</kbd></div>
+        </div>
+        <div class="hp-row">
+          <div class="hp-t">代码模板</div>
+          <div class="hp-d">输入 <code>for</code> / <code>forof</code> / <code>function</code> / <code>if</code> / <code>try</code>，补全列表顶部会冒出绿色字样的完整结构（索引循环、for…of、函数、if…else、try…catch），回车即插入，光标落在该写代码的位置。</div>
+          <div class="hp-k"></div>
+        </div>
+        <div class="hp-row">
+          <div class="hp-t">括号</div>
+          <div class="hp-d">输入 <code>(</code> <code>[</code> <code>{</code> 自动补上右半边；光标停在括号旁，配对的那个会加框。</div>
+          <div class="hp-k"></div>
+        </div>
+        <div class="hp-row">
+          <div class="hp-t">同名变量高亮</div>
+          <div class="hp-d">双击一个变量，文件里其余同名处会用浅青底色标出来。注释和字符串里的同名词颜色更淡，一眼能分出「代码在用的」和「只是文字里提到」。</div>
+          <div class="hp-k">双击</div>
+        </div>
+        <div class="hp-row">
+          <div class="hp-t">折叠代码</div>
+          <div class="hp-d">鼠标移到行号区，行号右侧会出现折叠三角；点一下收起整块。展开用 <kbd>Ctrl+Shift+]</kbd>。</div>
+          <div class="hp-k"><kbd>Ctrl+Shift+[</kbd></div>
+        </div>
+        <div class="hp-row">
+          <div class="hp-t">缩进</div>
+          <div class="hp-d"><kbd>Tab</kbd> 插入两个空格；选中多行再按 <kbd>Tab</kbd> 整体右移，<kbd>Shift+Tab</kbd> 左移。</div>
+          <div class="hp-k"><kbd>Tab</kbd></div>
+        </div>
+      </section>
+
+      <section id="hp-run">
+        <h3>运行</h3>
+        <div class="hp-row">
+          <div class="hp-t">运行代码</div>
+          <div class="hp-d">在一个隐藏的沙箱 iframe 里执行，不刷新页面、不动编辑器里的内容。</div>
+          <div class="hp-k"><kbd>Ctrl+Enter</kbd></div>
+        </div>
+        <div class="hp-row">
+          <div class="hp-t">看输出</div>
+          <div class="hp-d"><code>console.log</code> / <code>info</code> / <code>warn</code> / <code>error</code> 都按级别配色，对象和数组会展开成可读的一行。</div>
+          <div class="hp-k"></div>
+        </div>
+        <div class="hp-row">
+          <div class="hp-t">报错定位</div>
+          <div class="hp-d">出错的栈会映射回编辑器里的真实行号，消息后面跟一个「第 N 行」，点它直接跳过去。</div>
+          <div class="hp-k"></div>
+        </div>
+        <div class="hp-row">
+          <div class="hp-t">超时与停止</div>
+          <div class="hp-d">跑超过 3 秒会被自动终止；运行中也可以随时按「停止」。</div>
+          <div class="hp-k"></div>
+        </div>
+        <div class="hp-note">
+          <b>一个拦不住的情况：</b><code>while (true) {}</code> 这种同步死循环会把浏览器主线程占死，任何超时都进不去。页面卡住时关掉标签页重开即可 —— 代码有自动保存，不会丢。
+        </div>
+      </section>
+
+      <section id="hp-repl">
+        <h3>控制台求值</h3>
+        <div class="hp-row">
+          <div class="hp-t">打开</div>
+          <div class="hp-d">运行过一次之后，输出面板底部会多出一行 <code>›</code> 输入框。它和你刚才跑的代码同一个会话。</div>
+          <div class="hp-k"></div>
+        </div>
+        <div class="hp-row">
+          <div class="hp-t">直接求值</div>
+          <div class="hp-d">敲 <code>users.length</code>、<code>users.map(u =&gt; u.name)</code> 回车就有结果，不用改上面的代码再重跑一遍。</div>
+          <div class="hp-k"><kbd>Enter</kbd></div>
+        </div>
+        <div class="hp-row">
+          <div class="hp-t">声明也能用</div>
+          <div class="hp-d"><code>var x = 5</code> 这种语句同样可以，敲完之后 <code>x * 2</code> 读得到 10。</div>
+          <div class="hp-k"></div>
+        </div>
+        <div class="hp-row">
+          <div class="hp-t">翻历史</div>
+          <div class="hp-d">上下键在敲过的命令里来回翻；<kbd>Esc</kbd> 清空当前输入。</div>
+          <div class="hp-k"><kbd>↑</kbd> <kbd>↓</kbd></div>
+        </div>
+        <div class="hp-row">
+          <div class="hp-t">重开一局</div>
+          <div class="hp-d">再按一次 <kbd>Ctrl+Enter</kbd> 就是全新会话，上次的变量和页面 DOM 都会重置。</div>
+          <div class="hp-k"></div>
+        </div>
+      </section>
+
+      <section id="hp-mock">
+        <h3>模拟网页 DOM</h3>
+        <div class="hp-row">
+          <div class="hp-t">用途</div>
+          <div class="hp-d">编辑器里的 <code>document</code> 默认是张空白页。把目标网页的 HTML 贴进来，<code>querySelector</code>、<code>innerHTML</code>、<code>style</code> 就都有真实结构可操作了。</div>
+          <div class="hp-k"></div>
+        </div>
+        <div class="hp-row">
+          <div class="hp-t">开启</div>
+          <div class="hp-d">点输出面板上的「模拟页面」，上方会展开一个输入框；按钮变蓝表示已启用。</div>
+          <div class="hp-k"><kbd>Alt+M</kbd></div>
+        </div>
+        <div class="hp-row">
+          <div class="hp-t">规则</div>
+          <div class="hp-d">贴完整页面（含 <code>&lt;html&gt;</code> / <code>&lt;body&gt;</code>）也行，会自动取出 body 内容；页面里的 <code>&lt;script&gt;</code> 不会执行；每次运行前会清空重来，上一次改过的节点不会残留。</div>
+          <div class="hp-k"></div>
+        </div>
+        <div class="hp-row">
+          <div class="hp-t">练手</div>
+          <div class="hp-d">点「示例」填一段商品列表，可以直接试 <code>document.querySelectorAll('.item').length</code>。</div>
+          <div class="hp-k"></div>
+        </div>
+        <div class="hp-note">
+          <b>注意：</b>贴进来的 HTML 如果带 <code>&lt;img src="https://…"&gt;</code> 或外链样式表，运行时真的会去联网加载。想保持离线干净，就只贴需要的那段结构。
+        </div>
+      </section>
+
+      <section id="hp-tidy">
+        <h3>检查与整理</h3>
+        <div class="hp-row">
+          <div class="hp-t">语法检测</div>
+          <div class="hp-d">停止输入约 0.4 秒后自动解析。漏括号会指出缺的是哪一个（左括号还是右括号）、在第几行；常见英文报错都翻成了中文，状态栏会显示「语法检查通过」。</div>
+          <div class="hp-k">自动</div>
+        </div>
+        <div class="hp-row">
+          <div class="hp-t">格式化</div>
+          <div class="hp-d">重新缩进、补齐空格、对齐换行。已经排好的代码再按一次不会有变化。</div>
+          <div class="hp-k"><kbd>Shift+Alt+F</kbd></div>
+        </div>
+        <div class="hp-row">
+          <div class="hp-t">压缩</div>
+          <div class="hp-d">删注释、去多余空白、安全合并行。留白的取舍按分号自动插入的规则来算，不会压缩出语义变化。</div>
+          <div class="hp-k"><kbd>Shift+Alt+M</kbd></div>
+        </div>
+        <div class="hp-row">
+          <div class="hp-t">注释 / 取消注释</div>
+          <div class="hp-d">对选中的行切换行注释；没选中就作用于当前行。顶栏两个按钮也是同样的事，方便不知道快捷键的人。</div>
+          <div class="hp-k"><kbd>Ctrl+/</kbd></div>
+        </div>
+        <div class="hp-row">
+          <div class="hp-t">查找与替换</div>
+          <div class="hp-d">双栏面板：上格找、下格替换。支持 <code>/正则/flags</code> 写法和 <code>$1</code> 到 <code>$9</code> 反向引用；命中处标黄，回车逐个跳，<kbd>F3</kbd> / <kbd>Shift+F3</kbd> 前后翻。</div>
+          <div class="hp-k"><kbd>Ctrl+F</kbd> / <kbd>Ctrl+H</kbd></div>
+        </div>
+      </section>
+
+      <section id="hp-file">
+        <h3>文件与导出</h3>
+        <div class="hp-row">
+          <div class="hp-t">打开</div>
+          <div class="hp-d">选一个本地 <code>.js</code>；或者直接把文件拖进窗口，松手就打开。</div>
+          <div class="hp-k">拖拽</div>
+        </div>
+        <div class="hp-row">
+          <div class="hp-t">保存</div>
+          <div class="hp-d">把编辑器里的内容存成 <code>script.js</code> 下载下来。</div>
+          <div class="hp-k"><kbd>Ctrl+S</kbd></div>
+        </div>
+        <div class="hp-row">
+          <div class="hp-t">转 Bookmark JS</div>
+          <div class="hp-d">把当前脚本压成一行 <code>javascript:…</code>，粘进书签的网址栏，之后在任意网页上点一下这个书签，代码就在那个页面里跑 —— 这才是操作真实网页 DOM 的正路。弹窗里可以「复制链接」或「拖我到书签栏」，点「还原为代码」又能把链接变回可编辑的代码。</div>
+          <div class="hp-k"><kbd>Shift+Alt+B</kbd></div>
+        </div>
+        <div class="hp-row">
+          <div class="hp-t">注释一条不少</div>
+          <div class="hp-d">书签链接只能是单行，所以 <code>//</code> 会改写成 <code>/* */</code> 而不会被删掉；换行处的分号按语句边界补，生成后还会重新解析一遍对拍，语义对不上就自动退回更保守的写法。</div>
+          <div class="hp-k"></div>
+        </div>
+        <div class="hp-row">
+          <div class="hp-t">自动保存</div>
+          <div class="hp-d">每次改动后约 0.5 秒写入浏览器本地存储，关掉页面再打开内容还在。顶栏右侧显示上次保存的时刻。</div>
+          <div class="hp-k">自动</div>
+        </div>
+        <div class="hp-note">
+          <b>书签脚本的限制：</b>只能在普通网页上运行。<code>chrome://</code>、扩展管理页、新标签页这类浏览器内部页面禁止执行书签脚本，点了没反应是正常的。
+        </div>
+      </section>
+
+      <section id="hp-ui">
+        <h3>界面</h3>
+        <div class="hp-row">
+          <div class="hp-t">深浅主题</div>
+          <div class="hp-d">切换后立刻生效，选择会被记住。</div>
+          <div class="hp-k"><kbd>Ctrl+Shift+L</kbd></div>
+        </div>
+        <div class="hp-row">
+          <div class="hp-t">字号</div>
+          <div class="hp-d">状态栏右下角的 <code>−</code> / <code>+</code>，范围 11–22 px，同样会记住。</div>
+          <div class="hp-k"><kbd>Ctrl+Shift+.</kbd> / <kbd>Ctrl+Shift+,</kbd></div>
+        </div>
+        <div class="hp-row">
+          <div class="hp-t">调整分栏</div>
+          <div class="hp-d">拖动编辑区和输出区中间那条横杠，改变上下比例。</div>
+          <div class="hp-k">拖拽</div>
+        </div>
+        <div class="hp-row">
+          <div class="hp-t">跳行</div>
+          <div class="hp-d">输入行号直接跳，支持 <code>行:列</code> 和百分比写法。</div>
+          <div class="hp-k"><kbd>Ctrl+G</kbd></div>
+        </div>
+        <div class="hp-row">
+          <div class="hp-t">状态栏</div>
+          <div class="hp-d">底栏常驻：点亮的就绪状态、光标在第几行第几列、全文多少字符、语法检查结果、当前字号。</div>
+          <div class="hp-k"></div>
+        </div>
+        <div class="hp-row">
+          <div class="hp-t">窄屏</div>
+          <div class="hp-d">窗口窄于 760px 时自动改成上下排列，顶栏会收起次要文字，功能一个不少。</div>
+          <div class="hp-k"></div>
+        </div>
+        <div class="hp-note">
+          <b>关于这个工具：</b>整个编辑器就是一个 HTML 文件，没有任何外部依赖，断网也照常用。它跑在浏览器里，所以没有 <code>require</code>、<code>fs</code>、<code>process</code> 这些 Node 的东西，能用的就是浏览器 API 和 ES 新语法。草稿存在浏览器本地，换浏览器或者清缓存会丢 —— 重要的代码记得按「保存」。
+        </div>
+      </section>
+
+    </div>
+
+    <div class="hp-foot">
+      <span><kbd>Esc</kbd> 关闭</span>
+      <span class="spacer"></span>
+      <span>Teddy 出品 · 本地离线</span>
+    </div>
+  </div>
+</div>
+
+<div class="statusbar">
+  <span><span class="dot" id="stateDot"></span><span id="stateText">就绪</span></span>
+  <span class="sep opt">|</span>
+  <span id="cursorPos">行 1, 列 1</span>
+  <span class="sep opt">|</span>
+  <span id="charCount" class="opt">0 字符</span>
+  <span class="sep">|</span>
+  <span class="lint-state" id="lintState">语法检查就绪</span>
+  <span class="right">
+    <button class="mini" id="fontDec" data-tip="缩小字号 · Ctrl+Shift+,">−</button>
+    <span class="zoom-val" id="fontVal">13.5</span>
+    <button class="mini" id="fontInc" data-tip="放大字号 · Ctrl+Shift+.">+</button>
+  </span>
+</div>
+
+<div class="drop-veil" id="dropVeil"><span>松开即可打开这个文件</span></div>
+<input type="file" id="fileInput" accept=".js,.mjs,.txt" style="display:none">
+<iframe id="sandbox" sandbox="allow-scripts" style="display:none" title="sandbox"></iframe>
+
+<script>
+/*__CM_JS__*/
+</script>
+<script>
+/*__MODE_JS__*/
+</script>
+<script>
+/*__HINT_JS__*/
+</script>
+<script>
+/*__JSHINT_JS__*/
+</script>
+<script>
+/*__MATCH_JS__*/
+</script>
+<script>
+/*__CLOSE_JS__*/
+</script>
+<script>
+/*__ACTIVE_JS__*/
+</script>
+<script>
+/*__COMMENT_JS__*/
+</script>
+<script>
+/*__SEARCHCURSOR_JS__*/
+</script>
+<script>
+/*__DIALOG_JS__*/
+</script>
+<script>
+/*__SEARCH_JS__*/
+</script>
+<script>
+/*__JUMP_JS__*/
+</script>
+<script>
+/*__FOLDCODE_JS__*/
+</script>
+<script>
+/*__BRACEFOLD_JS__*/
+</script>
+<script>
+/*__COMMENTFOLD_JS__*/
+</script>
+<script>
+/*__FOLDGUTTER_JS__*/
+</script>
+<script>
+/*__ACORN_JS__*/
+</script>
+<script>
+/*__BEAUTIFY_JS__*/
+</script>
+<script>
+(function () {
+  "use strict";
+
+  var STORAGE_KEY = "js-playground.draft.v1";
+  var RUN_TIMEOUT = 3000;
+
+  var DEMO = [
+    "// Ctrl+Enter 运行 · Ctrl+Space 手动触发补全",
+    "// 输入时也会自动弹出提示",
+    "",
+    "const users = [",
+    '  { name: "Ada",   age: 36, lang: "JavaScript" },',
+    '  { name: "Linus", age: 55, lang: "C" },',
+    '  { name: "Grace", age: 45, lang: "COBOL" }',
+    "];",
+    "",
+    'console.log("共 " + users.length + " 位开发者");',
+    "",
+    "users.forEach(u => {",
+    "  console.log(`${u.name} · ${u.age} 岁 · ${u.lang}`);",
+    "});",
+    "",
+    "const avg = users.reduce((sum, u) => sum + u.age, 0) / users.length;",
+    'console.log("平均年龄:", avg.toFixed(1));',
+    "",
+    "// 试试故意写错，看看错误怎么显示",
+    "// console.log(notDefined);"
+  ].join("\n");
+
+  var BUILTINS = [
+    "console", "window", "document", "navigator", "location", "history", "screen",
+    "localStorage", "sessionStorage", "indexedDB", "fetch", "XMLHttpRequest",
+    "setTimeout", "setInterval", "clearTimeout", "clearInterval",
+    "requestAnimationFrame", "cancelAnimationFrame", "queueMicrotask",
+    "alert", "confirm", "prompt", "structuredClone", "atob", "btoa",
+    "Math", "JSON", "Object", "Array", "String", "Number", "Boolean",
+    "Date", "RegExp", "Map", "Set", "WeakMap", "WeakSet", "Promise",
+    "Symbol", "BigInt", "Error", "TypeError", "RangeError", "SyntaxError",
+    "parseInt", "parseFloat", "isNaN", "isFinite",
+    "encodeURIComponent", "decodeURIComponent", "encodeURI", "decodeURI",
+    "Intl", "Reflect", "Proxy", "ArrayBuffer", "Uint8Array", "Float64Array",
+    "Blob", "File", "FileReader", "FormData", "URL", "URLSearchParams",
+    "performance", "crypto", "globalThis", "undefined", "NaN", "Infinity"
+  ];
+
+  var SNIPPETS = [
+    {
+      prefixes: ["for", "fori"],
+      displayText: "for (…) { }   · 索引循环",
+      text: "for (let i = 0; i < array.length; i++) {\n  \n}"
+    },
+    {
+      prefixes: ["for", "forof", "for o"],
+      displayText: "for…of        · 遍历数组",
+      text: "for (const item of array) {\n  \n}"
+    },
+    {
+      prefixes: ["function", "fun", "fn"],
+      displayText: "function (…)  · 函数声明",
+      text: "function name(params) {\n  \n}"
+    },
+    {
+      prefixes: ["if", "ifelse"],
+      displayText: "if…else       · 条件分支",
+      text: "if (condition) {\n  \n} else {\n  \n}"
+    },
+    {
+      prefixes: ["try", "trycatch"],
+      displayText: "try…catch     · 异常处理",
+      text: "try {\n  \n} catch (err) {\n  \n}"
+    }
+  ];
+
+  var editor = document.getElementById("code");
+  var runBtn = document.getElementById("runBtn");
+  var stopBtn = document.getElementById("stopBtn");
+  var clearBtn = document.getElementById("clearBtn");
+  var openBtn = document.getElementById("openBtn");
+  var saveBtn = document.getElementById("saveBtn");
+  var saveState = document.getElementById("saveState");
+  var consoleBody = document.getElementById("consoleBody");
+  var emptyHint = document.getElementById("emptyHint");
+  var outCount = document.getElementById("outCount");
+  var stateDot = document.getElementById("stateDot");
+  var stateText = document.getElementById("stateText");
+  var cursorPos = document.getElementById("cursorPos");
+  var charCount = document.getElementById("charCount");
+  var fileInput = document.getElementById("fileInput");
+  var mainEl = document.getElementById("main");
+  var splitter = document.getElementById("splitter");
+
+  var commentBtn = document.getElementById("commentBtn");
+  var uncommentBtn = document.getElementById("uncommentBtn");
+  var formatBtn = document.getElementById("formatBtn");
+  var minifyBtn = document.getElementById("minifyBtn");
+  var bmBtn = document.getElementById("bmBtn");
+  var themeBtn = document.getElementById("themeBtn");
+  var findBtn = document.getElementById("findBtn");
+  var fontDec = document.getElementById("fontDec");
+  var fontInc = document.getElementById("fontInc");
+  var fontVal = document.getElementById("fontVal");
+  var dropVeil = document.getElementById("dropVeil");
+
+  function toggleComment() {
+    if (typeof cm.toggleComment !== "function") {
+      setState("err", "注释功能不可用");
+      return;
+    }
+    // indent:true 让带缩进的行把 // 插在缩进之后，而不是顶到行首
+    cm.toggleComment({ indent: true, blockCommentLead: " * " });
+    cm.focus();
+  }
+
+  // 选区覆盖到的行号（以 ch=0 收尾的下一行不计入，与 VS Code 一致）
+  function selectedLines() {
+    var seen = {};
+    var ranges = cm.listSelections();
+    for (var i = 0; i < ranges.length; i++) {
+      var from = ranges[i].from(), to = ranges[i].to();
+      var end = (to.ch === 0 && to.line > from.line) ? to.line - 1 : to.line;
+      for (var l = from.line; l <= end; l++) seen[l] = 1;
+    }
+    return Object.keys(seen).map(Number).sort(function (a, b) { return a - b; });
+  }
+
+  function commentLines() {
+    var lines = selectedLines();
+    var done = 0;
+    cm.operation(function () {
+      for (var i = 0; i < lines.length; i++) {
+        var idx = lines[i];
+        var text = cm.getLine(idx);
+        if (!/\S/.test(text)) continue;
+        var indent = /^\s*/.exec(text)[0];
+        if (text.substr(indent.length, 2) === "//") continue;
+        cm.replaceRange("// ", { line: idx, ch: indent.length }, { line: idx, ch: indent.length });
+        done++;
+      }
+    });
+    return done;
+  }
+
+  function uncommentLines() {
+    var lines = selectedLines();
+    var done = 0;
+    cm.operation(function () {
+      for (var i = 0; i < lines.length; i++) {
+        var idx = lines[i];
+        var text = cm.getLine(idx);
+        var line = /^(\s*)\/\/ ?/.exec(text);
+        var block = /^(\s*)\/\* ?(.*?) ?\*\/\s*$/.exec(text);
+        if (line) {
+          cm.replaceRange("", { line: idx, ch: line[1].length }, { line: idx, ch: line[0].length });
+          done++;
+        } else if (block) {
+          cm.replaceRange(block[1] + block[2], { line: idx, ch: 0 }, { line: idx, ch: text.length });
+          done++;
+        }
+      }
+    });
+    return done;
+  }
+
+  var FONT_DEFAULT = 13.5;
+  var FONT_MIN = 11;
+  var FONT_MAX = 22;
+  var FONT_STEP = 0.5;
+  var FONT_KEY = "js-playground.font.v1";
+  var fontNow = FONT_DEFAULT;
+
+  var foldRangeFinder = (CodeMirror.fold && CodeMirror.fold.combine)
+    ? CodeMirror.fold.combine(CodeMirror.fold.brace, CodeMirror.fold.comment)
+    : null;
+
+  var cm = CodeMirror.fromTextArea(editor, {
+    mode: "javascript",
+    lineNumbers: true,
+    gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter", "lint"],
+    lineWrapping: true,
+    indentUnit: 2,
+    tabSize: 2,
+    indentWithTabs: false,
+    autoCloseBrackets: true,
+    matchBrackets: true,
+    styleActiveLine: true,
+    foldGutter: true,
+    foldOptions: { rangeFinder: foldRangeFinder, widget: "⋯" },
+    autofocus: true,
+    phrases: {
+      "Search:": "查找：",
+      "Replace:": "替换：",
+      "Replace with:": "替换为：",
+      "Replace all:": "全部替换：",
+      "With:": "替换为：",
+      "Replace?": "要替换吗？",
+      "Yes": "是",
+      "No": "否",
+      "All": "全部",
+      "Stop": "停止",
+      "(Use /re/ syntax for regexp search)": "（支持 /正则/ 语法）",
+      "Jump to line:": "跳到行：",
+      "(Use line:column or scroll% syntax)": "（支持 行:列 或 百分比）"
+    },
+    extraKeys: {
+      "Ctrl-Enter": function () { run(); },
+      "Cmd-Enter": function () { run(); },
+      "Ctrl-Space": function (c) {
+        c.showHint({ hint: CodeMirror.hint.jsplayground, completeSingle: false });
+      },
+      "Ctrl-/": function () { toggleComment(); },
+      "Cmd-/": function () { toggleComment(); },
+      "Alt-Shift-F": function () { formatCode(); },
+      "Alt-Shift-M": function () { minifyCode(); },
+      "Alt-Shift-B": function () { bmToggle(); },
+      "Alt-M": function () { mockToggle(); },
+      "Ctrl-S": function () { saveFile(); },
+      "Cmd-S": function () { saveFile(); },
+      "Ctrl-F": function () { openSearch(); },
+      "Cmd-F": function () { openSearch(); },
+      "Ctrl-H": function () { openSearch(); },
+      "Cmd-H": function () { openSearch(); },
+      "Ctrl-Shift-F": function () { openSearch(); },
+      "F3": function () { if (srchState.open) srchStep(1); else openSearch(); },
+      "Shift-F3": function () { if (srchState.open) srchStep(-1); else openSearch(); },
+      "Ctrl-G": function () { editorCommand("jumpToLine"); },
+      "Alt-G": function () { editorCommand("jumpToLine"); },
+      "Ctrl-Shift-[": function (c) {
+        if (foldRangeFinder) c.foldCode(c.getCursor(), foldRangeFinder, "fold");
+      },
+      "Ctrl-Shift-]": function (c) {
+        if (foldRangeFinder) c.foldCode(c.getCursor(), foldRangeFinder, "unfold");
+      },
+      "Ctrl-Shift-.": function () { setFont(fontNow + FONT_STEP); },
+      "Ctrl-Shift-,": function () { setFont(fontNow - FONT_STEP); },
+      "Tab": function (c) {
+        if (c.somethingSelected()) {
+          c.indentSelection("add");
+        } else {
+          c.replaceSelection("  ", "end");
+        }
+      }
+    }
+  });
+
+  // CodeMirror 对 extraKeys 不做键名归一化，只按字面匹配；
+  // 带 Shift 的组合实际产生的是 "Shift-Ctrl-X"，所以补一份同义名。
+  (function addShiftAliases() {
+    var maps = cm.getOption("extraKeys") || {};
+    var keys = Object.keys(maps);
+    for (var i = 0; i < keys.length; i++) {
+      var parts = keys[i].split("-");
+      if (parts.length < 2) continue;
+      if (parts.indexOf("Shift") === -1 || parts[0] === "Shift") continue;
+      var rest = parts.filter(function (p) { return p !== "Shift"; });
+      var alias = ["Shift"].concat(rest).join("-");
+      if (!Object.prototype.hasOwnProperty.call(maps, alias)) maps[alias] = maps[keys[i]];
+    }
+  })();
+
+  /* ============ 语法检测 ============ */
+  var lintState = document.getElementById("lintState");
+  var LINT_DELAY = 420;
+  var lintTimer = null;
+  var lintMark = null;
+  var lintTarget = null;
+  var lintGutterLine = null;
+
+  var PAIRS = { ")": "(", "]": "[", "}": "{" };
+  var CLOSERS = { "(": ")", "[": "]", "{": "}" };
+  var CLOSER_ZH = { ")": "右括号 )", "]": "右方括号 ]", "}": "右大括号 }" };
+  var OPENER_ZH = { "(": "左括号 (", "[": "左方括号 [", "{": "左大括号 {" };
+
+  var MSG_ZH = [
+    [/^Unterminated string constant/, "字符串没闭合，少了引号"],
+    [/^Unterminated template/, "模板字符串没闭合，少了反引号"],
+    [/^Unterminated regular expression/, "正则表达式没闭合，少了 /"],
+    [/^Unexpected token/, "出现意外的符号"],
+    [/^Unexpected end of input/, "代码意外结束"],
+    [/^Unexpected character/, "出现非法字符"],
+    [/^Unexpected reserved word/, "保留字不能这样使用"],
+    [/^Expecting /, "这里有语法错误"],
+    [/^Assigning to rvalue/, "等号左边不能是表达式结果"],
+    [/^Invalid left-hand side/, "等号左边不合法"],
+    [/^Invalid number/, "数字写法有误"],
+    [/has already been declared/, "同名变量重复声明（let/const 不能重复）"],
+    [/^'return' outside of function/, "return 只能写在函数里"],
+    [/^Unsyntactic (break|continue)/, "break/continue 不在循环里"],
+    [/^Unsyntactic/, "语句位置不合法"],
+    [/^'super' keyword/, "super 的使用位置不对"],
+    [/^Cannot use keyword/, "关键字不能当变量名"],
+    [/^Binding .* in strict mode/, "严格模式下不允许这个名字"],
+    [/^Redefinition of __proto__/, "__proto__ 重复定义"],
+    [/^Duplicate constructor/, "class 里重复定义了 constructor"],
+    [/^Getter should have no params/, "getter 不能带参数"],
+    [/^Setter should have exactly one param/, "setter 必须有且只有一个参数"],
+    [/^A rest element must be last/, "剩余参数 ... 必须放在最后"],
+    [/^Trailing comma is not permitted/, "这里不能有逗号"],
+    [/^Invalid destructuring/, "解构写法有误"],
+    [/^Complex binding patterns require an initialization/, "解构声明必须赋初值"],
+    [/^Property name expected/, "这里需要一个属性名"],
+    [/(^|\s)Argument name clash/, "函数参数重名（严格模式下不允许）"],
+  ];
+
+  function explain(msg) {
+    for (var i = 0; i < MSG_ZH.length; i++) {
+      if (MSG_ZH[i][0].test(msg)) return MSG_ZH[i][1];
+    }
+    return msg.replace(/\s*\(\d+:\d+\)\s*$/, "");
+  }
+
+  // 全角字符判定 + 半角对照（中文输入法下最常见的坑）
+  function isFullWidth(ch) {
+    if (!ch) return false;
+    var c = ch.charCodeAt(0);
+    return (c >= 0xFF01 && c <= 0xFF5E) || c === 0x3000 ||
+      (c >= 0x2018 && c <= 0x201D) ||
+      (c >= 0x3001 && c <= 0x3011) || (c >= 0xFF5F && c <= 0xFF65);
+  }
+
+  function halfForm(ch) {
+    if (!ch) return "";
+    var c = ch.charCodeAt(0);
+    if (c >= 0xFF01 && c <= 0xFF5E) return String.fromCharCode(c - 0xFEE0);
+    if (c === 0x3000) return " ";
+    if (c === 0x201C || c === 0x201D) return '"';
+    if (c === 0x2018 || c === 0x2019) return "'";
+    return "";
+  }
+
+  // 用 acorn 的 tokenizer 扫括号：注释/字符串/模板/正则都按真实词法处理
+  function scanBrackets(code) {
+    if (typeof acorn === "undefined" || !acorn.tokenizer) return null;
+    var tk;
+    try {
+      tk = acorn.tokenizer(code, { ecmaVersion: "latest", locations: true });
+    } catch (e) {
+      return null;
+    }
+    var stack = [];
+    var label, top, need;
+    try {
+      for (;;) {
+        var t = tk.getToken();
+        if (t.type === acorn.tokTypes.eof) break;
+        label = t.type.label;
+        if (label === "(" || label === "[" || label === "{" || label === "${") {
+          stack.push({
+            open: label === "${" ? "{" : label,
+            line: t.loc.start.line - 1,
+            col: t.loc.start.column
+          });
+        } else if (label === ")" || label === "]" || label === "}") {
+          top = stack[stack.length - 1];
+          if (!top) {
+            return {
+              kind: "extra",
+              line: t.loc.start.line - 1,
+              col: t.loc.start.column,
+              summary: "多了一个 " + label + "，没有对应的 " + PAIRS[label],
+              detail: "第 " + t.loc.start.line + " 行第 " + (t.loc.start.column + 1) +
+                " 列的 " + label + " 没有对应的 " + PAIRS[label] + " 可以关闭。"
+            };
+          }
+          if (top.open !== PAIRS[label]) {
+            need = CLOSERS[top.open];
+            return {
+              kind: "missing",
+              line: top.line,
+              col: top.col,
+              summary: "缺少" + CLOSER_ZH[need],
+              detail: "第 " + (top.line + 1) + " 行第 " + (top.col + 1) + " 列的 " + top.open +
+                " 直到第 " + t.loc.start.line + " 行的 " + label + " 还没闭合，这里应该先补一个 " + need + "。"
+            };
+          }
+          stack.pop();
+        }
+      }
+    } catch (e) {
+      return null;
+    }
+    if (stack.length) {
+      top = stack[stack.length - 1];
+      need = CLOSERS[top.open];
+      return {
+        kind: "unclosed",
+        line: top.line,
+        col: top.col,
+        summary: OPENER_ZH[top.open] + " 没有闭合",
+        detail: "第 " + (top.line + 1) + " 行第 " + (top.col + 1) + " 列打开的 " + top.open +
+          " 一直缺少对应的 " + need + "（直到代码结尾都没找到）。"
+      };
+    }
+    return null;
+  }
+
+  function parseCode(code) {
+    if (typeof acorn === "undefined" || !acorn.parse) return { ok: true };
+    var base = {
+      ecmaVersion: "latest",
+      locations: true,
+      allowAwaitOutsideFunction: true,
+      allowReturnOutsideFunction: true,
+      allowHashBang: true
+    };
+    try {
+      acorn.parse(code, base);
+      return { ok: true };
+    } catch (e1) {
+      if (/sourceType: module/.test(e1.message || "")) {
+        base.sourceType = "module";
+        try {
+          acorn.parse(code, base);
+          return { ok: true };
+        } catch (e2) {
+          return { ok: false, err: e2 };
+        }
+      }
+      return { ok: false, err: e1 };
+    }
+  }
+
+  function checkCode(code) {
+    if (!code.trim()) return null;
+    var r = parseCode(code);
+    if (r.ok) return null;
+    var err = r.err;
+    var msg = String(err.message || "");
+    var line = err.loc ? err.loc.line - 1 : 0;
+    var col = err.loc ? err.loc.column : 0;
+
+    // 全角符号：位置精确到具体字符，直接给出该换成什么
+    var bad = typeof err.pos === "number" ? code.charAt(err.pos) : "";
+    if (isFullWidth(bad)) {
+      var half = halfForm(bad);
+      return {
+        line: line,
+        col: col,
+        summary: "全角符号 " + bad + (half ? "，应改成 " + half : ""),
+        detail: "第 " + (line + 1) + " 行第 " + (col + 1) + " 列的 " + bad +
+          " 是全角字符，JavaScript 只认" + (half ? "半角 " + half : "半角符号") + "。"
+      };
+    }
+
+    // 解析器对「Unexpected token」只能给出崩掉的位置，
+    // 括号扫描能找到真正缺的那一边，优先采用
+    if (/^(Unexpected token|Unexpected end of input|Expecting|Unexpected character)/.test(msg)) {
+      var br = scanBrackets(code);
+      if (br) {
+        return {
+          line: br.line,
+          col: br.col,
+          summary: br.summary,
+          detail: br.detail + "\n解析器原文：" + msg
+        };
+      }
+    }
+    return { line: line, col: col, summary: explain(msg), detail: msg };
+  }
+
+  function clearLint() {
+    if (lintMark) { lintMark.clear(); lintMark = null; }
+    if (lintGutterLine !== null) {
+      cm.setGutterMarker(lintGutterLine, "lint", null);
+      lintGutterLine = null;
+    }
+    lintTarget = null;
+  }
+
+  function lintNow() {
+    var res = checkCode(cm.getValue());
+    clearLint();
+    if (!res) {
+      lintState.className = "lint-state";
+      lintState.textContent = "语法检查通过";
+      lintState.title = "";
+      return;
+    }
+    var last = cm.lineCount() - 1;
+    var line = Math.max(0, Math.min(last, res.line));
+    var text = cm.getLine(line) || "";
+    var ch = Math.max(0, Math.min(text.length, res.col));
+
+    var start = Math.min(ch, Math.max(0, text.length - 1));
+    if (text.length > 0) {
+      lintMark = cm.markText(
+        { line: line, ch: start },
+        { line: line, ch: text.length },
+        { className: "cm-lint-underline" }
+      );
+    }
+
+    var dot = document.createElement("span");
+    dot.className = "lint-dot";
+    dot.title = res.summary + "\n" + res.detail;
+    cm.setGutterMarker(line, "lint", dot);
+    lintGutterLine = line;
+
+    lintTarget = { line: line, ch: ch };
+    lintState.className = "lint-state has-err";
+    lintState.textContent = res.summary + " · 第 " + (line + 1) + " 行";
+    lintState.title = res.detail + "\n（点击跳到该行）";
+  }
+
+  function scheduleLint() {
+    clearTimeout(lintTimer);
+    lintTimer = setTimeout(lintNow, LINT_DELAY);
+  }
+
+  lintState.addEventListener("click", function () {
+    if (!lintTarget) return;
+    cm.focus();
+    cm.setCursor(lintTarget);
+    cm.scrollIntoView(lintTarget, 120);
+  });
+
+  function nativeHint(cm2, options) {
+    var fn = CodeMirror.hint.javascript;
+    if (typeof fn !== "function") return null;
+    try { return fn(cm2, options); } catch (e) { return null; }
+  }
+
+  function buildContext(code) {
+    var ctx = Object.create(null);
+    var re = /\b(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s*=\s*\{/g;
+    var m;
+    while ((m = re.exec(code))) {
+      var name = m[1];
+      var i = re.lastIndex - 1;
+      var depth = 0;
+      var j = i;
+      for (; j < code.length; j++) {
+        var ch = code[j];
+        if (ch === "{") depth++;
+        else if (ch === "}") { depth--; if (depth === 0) break; }
+      }
+      var body = code.slice(i + 1, j);
+      var obj = Object.create(null);
+      var keyRe = /(?:^|[,{\s])\s*["']?([A-Za-z_$][\w$]*)["']?\s*:/g;
+      var km;
+      while ((km = keyRe.exec(body))) obj[km[1]] = 1;
+      ctx[name] = obj;
+    }
+    var are = /\b(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s*=\s*\[/g;
+    while ((m = are.exec(code))) ctx[m[1]] = [];
+    return ctx;
+  }
+
+  function collectDeclarations(code) {
+    var names = Object.create(null);
+    var patterns = [
+      /\b(?:var|let|const)\s+([A-Za-z_$][\w$]*)/g,
+      /\bfunction\s+([A-Za-z_$][\w$]*)/g,
+      /\bclass\s+([A-Za-z_$][\w$]*)/g,
+      /\bcatch\s*\(\s*([A-Za-z_$][\w$]*)/g
+    ];
+    for (var p = 0; p < patterns.length; p++) {
+      var m;
+      while ((m = patterns[p].exec(code))) names[m[1]] = 1;
+    }
+    var destr = /\b(?:var|let|const)\s*[\{\[]([^\]\}]+)[\}\]]\s*=/g;
+    var dm;
+    while ((dm = destr.exec(code))) {
+      dm[1].split(",").forEach(function (part) {
+        var v = part.split(":").pop().replace(/^\.{3}/, "").replace(/=.*$/, "").trim();
+        if (/^[A-Za-z_$][\w$]*$/.test(v)) names[v] = 1;
+      });
+    }
+    return Object.keys(names);
+  }
+
+  var GLOBAL_BASE = (function () {
+    var out = Object.create(null);
+    var names = ["console", "Math", "JSON", "Object", "Array", "String", "Number",
+      "Boolean", "Date", "RegExp", "Map", "Set", "WeakMap", "Promise", "Symbol",
+      "Error", "TypeError", "RangeError", "document", "window", "navigator",
+      "location", "performance", "localStorage", "sessionStorage"];
+    names.forEach(function (n) {
+      try { out[n] = window[n]; } catch (e) {}
+    });
+    return out;
+  })();
+
+  CodeMirror.registerHelper("hint", "jsplayground", function (cm2, options) {
+    var cur = cm2.getCursor();
+    var line = cm2.getLine(cur.line);
+    var token = cm2.getTokenAt(cur);
+    var start = token.start;
+    var code = cm2.getValue();
+    var opts = Object.assign({}, options || {});
+    opts.useGlobalScope = false;
+    opts.additionalContext = Object.assign(
+      Object.create(null),
+      GLOBAL_BASE,
+      opts.additionalContext || {},
+      buildContext(code)
+    );
+    var base = nativeHint(cm2, opts);
+    var list = (base && base.list ? base.list.slice() : []);
+    var from = (base && base.from) ? base.from : CodeMirror.Pos(cur.line, start);
+    var to = CodeMirror.Pos(cur.line, cur.ch);
+
+    var beforeStart = line.slice(0, from.ch);
+    var isProperty = /\.\s*$/.test(beforeStart);
+
+    if (!isProperty) {
+      var prefix = line.slice(from.ch, cur.ch).toLowerCase();
+      var seen = Object.create(null);
+      for (var i = 0; i < list.length; i++) {
+        var it = list[i];
+        seen[typeof it === "string" ? it : it.text] = true;
+      }
+      var snipItems = [];
+      for (var s = 0; s < SNIPPETS.length; s++) {
+        var sn = SNIPPETS[s];
+        for (var pi = 0; pi < sn.prefixes.length; pi++) {
+          if (sn.prefixes[pi].indexOf(prefix) === 0) {
+            snipItems.push({
+              text: sn.text,
+              displayText: sn.displayText,
+              className: "cm-hint-snippet"
+            });
+            break;
+          }
+        }
+      }
+      list = snipItems.concat(list);
+
+      var locals = collectDeclarations(code);
+      for (var k = 0; k < locals.length; k++) {
+        var n = locals[k];
+        if (!seen[n] && n.toLowerCase().indexOf(prefix) === 0) {
+          list.push({ text: n, className: "cm-hint-local" });
+          seen[n] = true;
+        }
+      }
+      for (var j = 0; j < BUILTINS.length; j++) {
+        var b = BUILTINS[j];
+        if (!seen[b] && b.toLowerCase().indexOf(prefix) === 0) {
+          list.push(b);
+          seen[b] = true;
+        }
+      }
+    }
+
+    if (!list.length) return null;
+    return { list: list, from: from, to: to };
+  });
+
+  cm.on("change", function (c, change) {
+    if (change.origin !== "complete") return;
+    var ins = change.text.join("\n");
+    var idx = ins.indexOf("\n  \n");
+    if (idx === -1) return;
+    var abs = c.indexFromPos(change.from) + idx + 3;
+    c.setCursor(c.posFromIndex(abs));
+  });
+
+  var hintTimer = null;
+  cm.on("inputRead", function (c, change) {
+    if (change.origin !== "+input") return;
+    var typed = change.text[0] || "";
+    if (!/^[A-Za-z_$]$/.test(typed) && typed !== ".") return;
+    clearTimeout(hintTimer);
+    hintTimer = setTimeout(function () {
+      if (!c.state.completionActive) {
+        c.showHint({ hint: CodeMirror.hint.jsplayground, completeSingle: false });
+      }
+    }, 120);
+  });
+
+  function updateCursor() {
+    var pos = cm.getCursor();
+    cursorPos.textContent = "行 " + (pos.line + 1) + ", 列 " + (pos.ch + 1);
+  }
+  function updateCount() {
+    charCount.textContent = cm.getValue().length + " 字符";
+  }
+  cm.on("cursorActivity", updateCursor);
+  cm.on("changes", function () {
+    updateCount();
+    scheduleSave();
+    scheduleLint();
+    scheduleSearchRescan();
+  });
+
+  /* ============ 同名标识符高亮（双击变量，全文其他出现处变色） ============ */
+  // 没用内置的 highlightSelectionMatches：它走 overlay，只能染一种颜色，
+  // 也没法区分「代码里的引用」和「注释/字符串里的同名词」；
+  // 边界判定还是写死的 \w，$ 和中文标识符都不认。这里用 markText 自己标。
+  var OCC_DELAY = 110;          // 光标停下来再扫，避免连续移动时抖动
+  var OCC_MAX = 1200;           // 标记上限，超长文件里单字符变量也不会把页面拖死
+  var OCC_IDENT = /^[\p{L}_$][\p{L}\p{N}_$]*$/u;
+  var OCC_CH = /[\p{L}\p{N}_$]/u;
+
+  var occMarks = [];
+  var occTimer = null;
+
+  function occClear() {
+    for (var i = 0; i < occMarks.length; i++) occMarks[i].clear();
+    occMarks = [];
+  }
+
+  // 光标或选区所在的完整标识符（选到半个词会自动补全）
+  function occTarget() {
+    var sels = cm.listSelections();
+    if (!sels.length) return null;
+    var a = sels[0].anchor, h = sels[0].head;
+    var from = CodeMirror.cmpPos(a, h) <= 0 ? a : h;
+    var to = CodeMirror.cmpPos(a, h) <= 0 ? h : a;
+    if (from.line !== to.line) return null;
+    var line = cm.getLine(from.line);
+    if (line == null) return null;
+    var s = from.ch, e = to.ch;
+    while (s > 0 && OCC_CH.test(line.charAt(s - 1))) s--;
+    while (e < line.length && OCC_CH.test(line.charAt(e))) e++;
+    var word = line.slice(s, e);
+    if (!OCC_IDENT.test(word)) return null;
+    return { word: word, line: from.line, from: s, to: e };
+  }
+
+  function occScan() {
+    occClear();
+    var t = occTarget();
+    if (!t) return;
+    // 查找面板开着时让位：那边用黄色命中标记，两组叠在一起会花
+    if (typeof srchState !== "undefined" && srchState && srchState.open) return;
+
+    var word = t.word;
+    var re = new RegExp(word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gu");
+    var hits = [];
+    var total = cm.lineCount();
+    for (var ln = 0; ln < total && hits.length < OCC_MAX; ln++) {
+      var text = cm.getLine(ln);
+      if (text.indexOf(word) < 0) continue;
+      re.lastIndex = 0;
+      var m;
+      while ((m = re.exec(text)) !== null && hits.length < OCC_MAX) {
+        var c0 = m.index, c1 = c0 + word.length;
+        if (c0 > 0 && OCC_CH.test(text.charAt(c0 - 1))) continue;
+        if (c1 < text.length && OCC_CH.test(text.charAt(c1))) continue;
+        hits.push({ line: ln, ch: c0, to: c1 });
+      }
+    }
+    if (!hits.length) return;
+
+    var cache = {};
+    function tokenTypeAt(ln, ch) {
+      var toks = cache[ln] || (cache[ln] = cm.getLineTokens(ln, true));
+      for (var i = 0; i < toks.length; i++) {
+        if (ch >= toks[i].start && ch < toks[i].end) return toks[i].type || "";
+      }
+      return "";
+    }
+
+    cm.operation(function () {
+      for (var i = 0; i < hits.length; i++) {
+        var p = hits[i];
+        var cls;
+        if (p.line === t.line && p.ch === t.from) {
+          cls = "cm-occ-here";              // 当前这一处
+        } else if (/comment|string|regexp/.test(tokenTypeAt(p.line, p.ch))) {
+          cls = "cm-occ-soft";              // 注释、字符串里的同名词，压到最淡
+        } else {
+          cls = "cm-occ-hit";               // 代码里的引用
+        }
+        occMarks.push(cm.markText(
+          { line: p.line, ch: p.ch },
+          { line: p.line, ch: p.to },
+          { className: cls }
+        ));
+      }
+    });
+  }
+
+  function occSchedule() {
+    if (occTimer) clearTimeout(occTimer);
+    occTimer = setTimeout(function () { occTimer = null; occScan(); }, OCC_DELAY);
+  }
+
+  cm.on("cursorActivity", occSchedule);
+  cm.on("changes", occSchedule);
+  setTimeout(occSchedule, 0);
+
+  function setState(kind, text) {
+    stateDot.className = "dot" + (kind ? " " + kind : "");
+    stateText.textContent = text;
+  }
+
+  var outTotal = 0;
+  function clearOutput() {
+    consoleBody.innerHTML = "";
+    outTotal = 0;
+    outCount.textContent = "0 条";
+    var hint = document.createElement("div");
+    hint.className = "console-hint";
+    hint.id = "emptyHint";
+    hint.innerHTML = '按 <b>Ctrl+Enter</b> 运行代码，跑完还能在下面那行继续求值。';
+    consoleBody.appendChild(hint);
+  }
+
+  function appendLine(level, text, jumpLine) {
+    var hint = document.getElementById("emptyHint");
+    if (hint) hint.remove();
+    var row = document.createElement("div");
+    row.className = "out-line" + (level === "warn" ? " warn" : level === "error" ? " error" : level === "sys" ? " sys" : "");
+    var mark = document.createElement("span");
+    mark.className = "mark";
+    mark.textContent = level === "warn" ? "WARN" : level === "error" ? "ERR" : level === "sys" ? "SYS" : "LOG";
+    var body = document.createElement("span");
+    body.className = "body";
+    body.textContent = String(text);
+    row.appendChild(mark);
+    row.appendChild(body);
+    if (typeof jumpLine === "number" && jumpLine > 0) {
+      var chip = document.createElement("span");
+      chip.className = "jump";
+      chip.textContent = "第 " + jumpLine + " 行";
+      row.appendChild(chip);
+      row.classList.add("is-link");
+      row.title = "点击跳到第 " + jumpLine + " 行";
+      row.addEventListener("click", function () { jumpToLine(jumpLine); });
+    }
+    consoleBody.appendChild(row);
+    outTotal++;
+    outCount.textContent = outTotal + " 条";
+    consoleBody.scrollTop = consoleBody.scrollHeight;
+  }
+
+  // REPL 的一行：kind = in(敲进去) / out(求值结果) / err(出错)
+  function appendRepl(kind, text) {
+    var hint = document.getElementById("emptyHint");
+    if (hint) hint.remove();
+    var row = document.createElement("div");
+    row.className = "out-line repl" + (kind === "in" ? " in" : "") + (kind === "err" ? " err" : "");
+    var mark = document.createElement("span");
+    mark.className = "mark";
+    mark.textContent = kind === "in" ? "›" : "‹";
+    var body = document.createElement("span");
+    body.className = "body";
+    body.textContent = String(text == null ? "" : text);
+    row.appendChild(mark);
+    row.appendChild(body);
+    consoleBody.appendChild(row);
+    outTotal++;
+    outCount.textContent = outTotal + " 条";
+    consoleBody.scrollTop = consoleBody.scrollHeight;
+  }
+
+  // 收集用户代码顶层的声明名，运行结束时把它们的值写进沙箱的 REPL 上下文。
+  // 只认 Program.body 直接子节点：函数内的局部变量跑完就该没了，留着反而误导。
+  function buildExports(code) {
+    if (typeof acorn === "undefined" || !acorn.parse) return "";
+    var ast;
+    try {
+      ast = acorn.parse(code, {
+        ecmaVersion: "latest",
+        allowAwaitOutsideFunction: true,
+        allowReturnOutsideFunction: true,
+        allowHashBang: true
+      });
+    } catch (e) { return ""; }
+
+    var names = [];
+    function push(n) { if (n && names.indexOf(n) < 0) names.push(n); }
+    function walk(p) {
+      if (!p) return;
+      switch (p.type) {
+        case "Identifier": push(p.name); break;
+        case "ObjectPattern":
+          p.properties.forEach(function (prop) {
+            if (prop.type === "RestElement") walk(prop.argument);
+            else walk(prop.value);
+          });
+          break;
+        case "ArrayPattern": p.elements.forEach(walk); break;
+        case "AssignmentPattern": walk(p.left); break;
+        case "RestElement": walk(p.argument); break;
+      }
+    }
+    ast.body.forEach(function (st) {
+      if (st.type === "VariableDeclaration") {
+        st.declarations.forEach(function (dec) { walk(dec.id); });
+      } else if ((st.type === "FunctionDeclaration" || st.type === "ClassDeclaration") && st.id) {
+        push(st.id.name);
+      }
+    });
+    if (!names.length) return "";
+    // 用 try 包住：顶层 if/for 里的 let 在块结束后访问不到，跳过即可，不能连锁报错
+    return names.map(function (n) {
+      return "try{__c." + n + "=" + n + "}catch(e){}";
+    }).join("\n");
+  }
+
+  // 栈里已经被沙箱改写成 script.js:行:列，取出第一个有效行号
+  function lineFromStack(text) {
+    var m = /script\.js:(\d+):\d+/.exec(String(text || ""));
+    return m ? parseInt(m[1], 10) : 0;
+  }
+
+  var flashTimer = null;
+  var flashLine = null;
+  function jumpToLine(n) {
+    var line = Math.max(0, Math.min(cm.lineCount() - 1, n - 1));
+    cm.focus();
+    cm.setCursor({ line: line, ch: 0 });
+    cm.scrollIntoView({ line: line, ch: 0 }, 120);
+    clearTimeout(flashTimer);
+    if (flashLine !== null) cm.removeLineClass(flashLine, "background", "cm-error-line");
+    cm.addLineClass(line, "background", "cm-error-line");
+    flashLine = line;
+    flashTimer = setTimeout(function () {
+      if (flashLine !== null) cm.removeLineClass(flashLine, "background", "cm-error-line");
+      flashLine = null;
+    }, 1800);
+  }
+
+  var RUNNER = [
+    "<!DOCTYPE html><html><head><meta charset=\"utf-8\"></head><body>",
+    "<script>",
+    "(function(){",
+    "  function send(type, payload){",
+    "    try { parent.postMessage({ __jsplay: 1, type: type, payload: payload }, '*'); } catch (e) {}",
+    "  }",
+    "  function safeJson(v){",
+    "    var seen = new WeakSet();",
+    "    return JSON.stringify(v, function(k, val){",
+    "      if (typeof val === 'object' && val !== null) {",
+    "        if (seen.has(val)) return '[Circular]';",
+    "        seen.add(val);",
+    "      }",
+    "      if (typeof val === 'function') return 'ƒ ' + (val.name || 'anonymous') + '()';",
+    "      if (typeof val === 'bigint') return val.toString() + 'n';",
+    "      if (val === undefined) return '[undefined]';",
+    "      return val;",
+    "    }, 2);",
+    "  }",
+    "  function fmt(v){",
+    "    if (typeof v === 'string') return v;",
+    "    if (v === undefined) return 'undefined';",
+    "    if (v === null) return 'null';",
+    "    var t = typeof v;",
+    "    if (t === 'number' || t === 'boolean' || t === 'bigint') return String(v);",
+    "    if (t === 'symbol') return v.toString();",
+    "    if (t === 'function') return 'ƒ ' + (v.name || 'anonymous') + '()';",
+    "    if (v instanceof Error) return v.stack || (v.name + ': ' + v.message);",
+    "    if (typeof Node !== 'undefined' && v instanceof Node) {",
+    "      var s = '<' + v.nodeName.toLowerCase();",
+    "      if (v.id) s += '#' + v.id;",
+    "      if (v.className && typeof v.className === 'string') s += '.' + v.className.split(/\\s+/).join('.');",
+    "      return s + '>';",
+    "    }",
+    "    if (typeof Map !== 'undefined' && v instanceof Map) return 'Map(' + v.size + ') ' + safeJson(Array.from(v.entries()));",
+    "    if (typeof Set !== 'undefined' && v instanceof Set) return 'Set(' + v.size + ') ' + safeJson(Array.from(v));",
+    "    try { return safeJson(v); } catch (e) { return String(v); }",
+    "  }",
+    "  ['log','info','warn','error','debug'].forEach(function(level){",
+    "    var orig = console[level];",
+    "    console[level] = function(){",
+    "      var args = Array.prototype.slice.call(arguments).map(fmt);",
+    "      send('log', { level: level === 'debug' ? 'log' : level, text: args.join(' ') });",
+    "      try { if (orig) orig.apply(console, arguments); } catch (e) {}",
+    "    };",
+    "  });",
+    "  console.table = function(data){ send('log', { level: 'log', text: fmt(data) }); };",
+    "  console.dir = function(data){ send('log', { level: 'log', text: fmt(data) }); };",
+    "  // new Function 生成的代码在栈里显示为 <anonymous>，行号带固定偏移。",
+    "  // 先用一个探针量出偏移（同步抛错立即取到），再做映射。",
+    "  var HEAD = 'return (async function(){';",
+    "  var LINE_SHIFT = 3;",
+    "  var MAX_LINE = 0;",
+    "  // REPL 上下文：每次运行结束时把顶层声明的值挂到这里，供后续求值访问",
+    "  var CTX = Object.create(null);",
+    "  try {",
+    "    (new Function('var __jsplay_probe = 0;\\nthrow new Error(\"__jsplay_probe__\");'))();",
+    "  } catch (e) {",
+    "    var pm = /<anonymous>:(\\d+):\\d+/.exec((e && e.stack) || '');",
+    "    if (pm) LINE_SHIFT = Math.max(0, parseInt(pm[1], 10) - 1);",
+    "  }",
+    "  function fixStack(s){",
+    "    if (!s) return s;",
+    "    var rows = String(s).split('\\n');",
+    "    var kept = [];",
+    "    for (var i = 0; i < rows.length; i++) {",
+    "      var row = rows[i];",
+    "      var m = /<anonymous>:(\\d+):(\\d+)/.exec(row);",
+    "      if (!m) { kept.push(row); continue; }",
+    "      var n = parseInt(m[1], 10) - LINE_SHIFT;",
+    "      if (n < 1 || (MAX_LINE && n > MAX_LINE)) continue;",
+    "      kept.push(row.replace(/<anonymous>:(\\d+):(\\d+)/g, 'script.js:' + n + ':' + m[2]));",
+    "    }",
+    "    return kept.join('\\n').replace(/\\(eval at <anonymous> \\([^)]*\\), /g, '(');",
+    "  }",
+    "  // REPL 求值结果：字符串带引号，对象压成一行，节点沿用 fmt 的 <tag#id.class>",
+    "  function safeJsonInline(v){",
+    "    var seen = new WeakSet();",
+    "    return JSON.stringify(v, function(k, val){",
+    "      if (typeof val === 'object' && val !== null) {",
+    "        if (seen.has(val)) return '[Circular]';",
+    "        seen.add(val);",
+    "      }",
+    "      if (typeof val === 'function') return '[Function]';",
+    "      if (typeof val === 'bigint') return val.toString() + 'n';",
+    "      if (val === undefined) return '[undefined]';",
+    "      return val;",
+    "    });",
+    "  }",
+    "  function fmtVal(v){",
+    "    if (v === undefined) return 'undefined';",
+    "    if (v === null) return 'null';",
+    "    var t = typeof v;",
+    "    if (t === 'string') return JSON.stringify(v);",
+    "    if (t === 'number' || t === 'boolean' || t === 'bigint') return String(v);",
+    "    if (t === 'symbol') return v.toString();",
+    "    if (t === 'function') return 'ƒ ' + (v.name || 'anonymous') + '()';",
+    "    if (typeof Document !== 'undefined' && v instanceof Document) return '#document';",
+    "    if (typeof Window !== 'undefined' && v instanceof Window) return 'Window';",
+    "    if (typeof Node !== 'undefined' && v instanceof Node) return fmt(v);",
+    "    if (v instanceof Error) return v.name + ': ' + v.message;",
+    "    try {",
+    "      var s = safeJsonInline(v);",
+    "      return s === undefined ? String(v) : s;",
+    "    } catch (e) { return String(v); }",
+    "  }",
+    "  // REPL：把表达式放进 with(CTX) 里求值，用的就是上一次运行留下的变量",
+    "  function evalInContext(d){",
+    "    var id = d.id;",
+    "    var src = String(d.code == null ? '' : d.code);",
+    "    if (!/\\S/.test(src)) { send('evalresult', { id: id, ok: true, text: 'undefined' }); return; }",
+    "    // 先当表达式；不成立再当语句块（支持 x = 1 / var y = 2 这种）",
+    "    // 两侧都补换行，免得源码末尾的 // 注释把收尾括号一起注释掉",
+    "    var fn = null, why = null;",
+    "    try {",
+    "      fn = new Function('__c', 'with(__c){ return (async () => (\\n' + src + '\\n))(); }');",
+    "    } catch (e1) {",
+    "      try {",
+    "        // 语句模式下顺带把新声明也写进上下文，这样 REPL 里 var z = 5 之后还能用 z",
+    "        fn = new Function('__c', 'with(__c){ return (async () => {\\n' + src + '\\n' + (d.exports || '') + '\\n})(); }');",
+    "      } catch (e2) { why = e2; }",
+    "    }",
+    "    if (!fn) {",
+    "      send('evalresult', { id: id, ok: false, text: 'SyntaxError: ' + ((why && why.message) || why) });",
+    "      return;",
+    "    }",
+    "    Promise.resolve().then(function(){ return fn(CTX); }).then(function(v){",
+    "      send('evalresult', { id: id, ok: true, text: fmtVal(v) });",
+    "    }).catch(function(err){",
+    "      // REPL 是单行表达式，栈里全是 with/箭头函数的内脏，只留一行错因",
+    "      send('evalresult', { id: id, ok: false, text: (err && err.name) ? (err.name + ': ' + err.message) : String(err) });",
+    "    });",
+    "  }",
+    "  window.onerror = function(msg, src, line, col, err){",
+    "    send('error', { text: (err && err.stack) ? fixStack(err.stack) : (msg + ' (行 ' + line + ')') });",
+    "    return true;",
+    "  };",
+    "  window.addEventListener('unhandledrejection', function(e){",
+    "    var r = e.reason;",
+    "    send('error', { text: (r && r.stack) ? fixStack(r.stack) : ('Unhandled rejection: ' + fmt(r)) });",
+    "  });",
+    "  window.addEventListener('message', function(e){",
+    "    var d = e.data;",
+    "    if (!d) return;",
+    "    if (d.__jsplay_cmd === 'eval') { evalInContext(d); return; }",
+    "    if (d.__jsplay_cmd !== 'run') return;",
+    "    var fn;",
+    "    // 一次运行 = 一次新会话：页面 DOM 和 REPL 上下文都重新来过",
+    "    try {",
+    "      document.body.innerHTML = '';",
+    "      var src = d.html == null ? '' : String(d.html);",
+    "      if (/\\S/.test(src)) {",
+    "        // 用 DOMParser 解析：贴完整页面也能取出 body，且其中的 <script> 不会被执行",
+    "        var parsed = new DOMParser().parseFromString(src, 'text/html');",
+    "        document.body.innerHTML = parsed.body.innerHTML;",
+    "      }",
+    "    } catch (err) {",
+    "      send('log', { level: 'warn', text: '模拟页面注入失败：' + (err && err.message ? err.message : err) });",
+    "    }",
+    "    MAX_LINE = String(d.code || '').split('\\n').length;",
+    "    CTX = Object.create(null);",
+    "    // 在用户代码末尾追加导出语句，把顶层声明的值搬进 CTX，供 REPL 继续用",
+    "    var body = HEAD + '\\n' + d.code + '\\n';",
+    "    if (d.exports) body += d.exports + '\\n';",
+    "    body += '})();';",
+    "    // new Function 的 body 在全局作用域执行，看不到闭包里的 CTX，所以当形参传进去",
+    "    try {",
+    "      fn = new Function('__c', body);",
+    "    } catch (err) {",
+    "      send('error', { text: 'SyntaxError: ' + (err.message || err) });",
+    "      send('done', {});",
+    "      return;",
+    "    }",
+    "    Promise.resolve().then(function(){ return fn(CTX); }).then(function(){",
+    "      send('done', {});",
+    "    }).catch(function(err){",
+    "      send('error', { text: (err && err.stack) ? fixStack(err.stack) : String(err) });",
+    "      send('done', {});",
+    "    });",
+    "  });",
+    "  send('ready', {});",
+    "})();",
+    "<\/script></body></html>"
+  ].join("\n");
+
+  var frame = document.getElementById("sandbox");
+  var frameState = "idle"; // idle 未加载 / loading 加载中 / ready 可收发消息
+  var pendingJob = null;
+  var runTimer = null;
+  var running = false;
+  var runStartedAt = 0;
+  var replTimer = null;
+  var replSeq = 0;
+  var replWaiting = 0;
+
+  /* ============ 模拟页面 DOM ============ */
+  // 编辑器自身的「运行」在隔离 iframe 里执行，document 只能指向那个 iframe。
+  // 浏览器不允许跨标签页、跨源 iframe 访问 DOM，所以想用真实站点调试只剩一条路：
+  // 把目标页的静态结构搬进沙箱。这里做的就是这件事。
+  var MOCK_KEY = "js-playground.mock.v1";
+  var mockBtn = document.getElementById("mockBtn");
+  var mockPanel = document.getElementById("mockPanel");
+  var mockCode = document.getElementById("mockCode");
+  var mockSub = document.getElementById("mockSub");
+  var mockSampleBtn = document.getElementById("mockSample");
+  var mockClearBtn = document.getElementById("mockClear");
+
+  var MOCK_SAMPLE = [
+    '<div class="app">',
+    '  <h1 id="title">商品列表</h1>',
+    '  <ul class="list">',
+    '    <li class="item" data-id="1">机械键盘 <b>¥399</b></li>',
+    '    <li class="item" data-id="2">显示器 <b>¥1299</b></li>',
+    '    <li class="item" data-id="3">鼠标垫 <b>¥39</b></li>',
+    '  </ul>',
+    '</div>'
+  ].join("\n");
+
+  function mockValue() {
+    return String(mockCode.value || "").replace(/\s+$/, "");
+  }
+
+  function mockSync() {
+    var v = mockValue();
+    var on = !!v.trim();
+    mockBtn.classList.toggle("is-on", on);
+    if (on) mockSub.innerHTML = "已启用 · <b>" + v.length + "</b> 字符 · 运行时会注入沙箱";
+    else mockSub.textContent = "留空则沙箱是空白页";
+    return v;
+  }
+
+  var mockSaveTimer = null;
+  function mockSave() {
+    if (mockSaveTimer) clearTimeout(mockSaveTimer);
+    mockSaveTimer = setTimeout(function () {
+      try { localStorage.setItem(MOCK_KEY, mockCode.value); } catch (e) {}
+    }, 400);
+  }
+
+  function mockToggle(force) {
+    var open = typeof force === "boolean" ? force : !mockPanel.classList.contains("open");
+    mockPanel.classList.toggle("open", open);
+    if (open) {
+      mockCode.focus();
+      var end = mockCode.value.length;
+      mockCode.setSelectionRange(end, end);
+    } else {
+      cm.focus();
+    }
+  }
+
+  mockBtn.addEventListener("click", function () { mockToggle(); });
+  mockCode.addEventListener("input", function () { mockSync(); mockSave(); });
+  mockSampleBtn.addEventListener("click", function () {
+    mockCode.value = MOCK_SAMPLE;
+    mockSync();
+    mockSave();
+    mockCode.focus();
+    mockCode.select();
+  });
+  mockClearBtn.addEventListener("click", function () {
+    mockCode.value = "";
+    mockSync();
+    mockSave();
+    mockCode.focus();
+  });
+  try {
+    var savedMock = localStorage.getItem(MOCK_KEY);
+    if (savedMock) mockCode.value = savedMock;
+  } catch (e) {}
+  mockSync();
+
+  function killFrame() {
+    if (runTimer) { clearTimeout(runTimer); runTimer = null; }
+    if (replTimer) { clearTimeout(replTimer); replTimer = null; }
+    pendingJob = null;
+    running = false;
+    replWaiting = 0;
+    frameState = "idle";
+    if (frame) frame.setAttribute("srcdoc", "");
+    runBtn.disabled = false;
+  }
+
+  // 沙箱只在第一次运行（或被强制终止之后）才真正加载；之后一直是同一个页面，
+  // 顶层声明的值因此能留在 REPL 里继续用
+  function bootFrame() {
+    if (frameState !== "idle") return;
+    frameState = "loading";
+    frame.removeAttribute("srcdoc");
+    frame.setAttribute("srcdoc", RUNNER);
+  }
+
+  function sendJob(job) {
+    try {
+      frame.contentWindow.postMessage({
+        __jsplay_cmd: "run",
+        code: job.code,
+        html: job.html,
+        exports: job.exports
+      }, "*");
+      runStartedAt = Date.now();
+    } catch (err) {
+      appendLine("error", "无法在沙箱中执行：" + err.message);
+      finishRun("执行失败");
+      return;
+    }
+    runTimer = setTimeout(function () {
+      if (running) {
+        appendLine("sys", "执行超过 " + (RUN_TIMEOUT / 1000) + " 秒，已强制终止（可能是死循环）");
+        killFrame();
+        setState("err", "已终止");
+      }
+    }, RUN_TIMEOUT);
+  }
+
+  function finishRun(text) {
+    if (runTimer) { clearTimeout(runTimer); runTimer = null; }
+    running = false;
+    runBtn.disabled = false;
+    if (text) {
+      var ms = runStartedAt ? (Date.now() - runStartedAt) : 0;
+      setState("ok", text + (ms > 0 ? " · " + ms + " ms" : ""));
+    }
+    runStartedAt = 0;
+  }
+
+  window.addEventListener("message", function (e) {
+    var d = e.data;
+    if (!d || d.__jsplay !== 1) return;
+    if (d.type === "ready") {
+      frameState = "ready";
+      if (pendingJob) {
+        var job = pendingJob;
+        pendingJob = null;
+        sendJob(job);
+      }
+    } else if (d.type === "log") {
+      var p = d.payload || {};
+      appendLine(p.level || "log", p.text);
+    } else if (d.type === "error") {
+      var t = (d.payload && d.payload.text) || "未知错误";
+      appendLine("error", t, lineFromStack(t));
+    } else if (d.type === "evalresult") {
+      var r = d.payload || {};
+      replWaiting = 0;
+      if (replTimer) { clearTimeout(replTimer); replTimer = null; }
+      var txt = r.text == null ? "" : String(r.text);
+      appendRepl(r.ok ? "out" : "err", txt);
+      setState(r.ok ? "ok" : "err", r.ok ? "已求值" : "求值出错");
+    } else if (d.type === "done") {
+      if (running) finishRun("运行完成");
+    }
+  });
+
+  function run() {
+    clearOutput();
+    var code = cm.getValue();
+    if (!code.trim()) {
+      appendLine("sys", "代码为空，先写点什么。");
+      pendingJob = null;
+      return;
+    }
+    var job = { code: code, html: mockValue(), exports: buildExports(code) };
+    running = true;
+    runBtn.disabled = true;
+    if (job.html) appendLine("sys", "模拟页面已注入 · " + job.html.length + " 字符");
+    var issue = checkCode(code);
+    if (issue) {
+      appendLine("sys", "语法错误 · 第 " + (issue.line + 1) + " 行：" + issue.summary + "（仍尝试执行）");
+    }
+    setState("busy", "运行中…");
+    if (frameState === "ready") sendJob(job);
+    else { pendingJob = job; bootFrame(); }
+  }
+
+  runBtn.addEventListener("click", run);
+
+  /* ============ 控制台 REPL ============ */
+  var replInput = document.getElementById("replInput");
+  var replHistory = [];
+  var replHistIdx = 0;
+  var replDraft = "";
+
+  function replSubmit() {
+    var src = String(replInput.value || "").trim();
+    if (!src) return;
+    if (frameState !== "ready") {
+      appendLine("sys", "沙箱还没启动 · 先按 Ctrl+Enter 运行一次代码");
+      return;
+    }
+    if (running) {
+      appendLine("sys", "代码还在运行，等它结束再求值");
+      return;
+    }
+    if (replWaiting) {
+      appendLine("sys", "上一次求值还没返回，稍等");
+      return;
+    }
+    replHistory.push(src);
+    replHistIdx = replHistory.length;
+    replDraft = "";
+    replInput.value = "";
+    appendRepl("in", src);
+    setState("busy", "求值中…");
+    replWaiting = ++replSeq;
+    try {
+      frame.contentWindow.postMessage({
+        __jsplay_cmd: "eval", code: src, id: replWaiting, exports: buildExports(src)
+      }, "*");
+    } catch (err) {
+      replWaiting = 0;
+      appendRepl("err", "无法求值：" + err.message);
+      setState("err", "求值失败");
+      return;
+    }
+    if (replTimer) clearTimeout(replTimer);
+    replTimer = setTimeout(function () {
+      if (replWaiting) {
+        appendRepl("err", "求值超过 " + (RUN_TIMEOUT / 1000) + " 秒，沙箱已重置");
+        killFrame();
+        setState("err", "已终止");
+      }
+    }, RUN_TIMEOUT);
+  }
+
+  replInput.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      replSubmit();
+      return;
+    }
+    if (e.key === "ArrowUp") {
+      if (!replHistory.length) return;
+      e.preventDefault();
+      if (replHistIdx >= replHistory.length) replDraft = replInput.value;
+      replHistIdx = Math.max(0, replHistIdx - 1);
+      replInput.value = replHistory[replHistIdx];
+      replInput.setSelectionRange(replInput.value.length, replInput.value.length);
+      return;
+    }
+    if (e.key === "ArrowDown") {
+      if (!replHistory.length) return;
+      e.preventDefault();
+      if (replHistIdx < replHistory.length - 1) {
+        replHistIdx++;
+        replInput.value = replHistory[replHistIdx];
+      } else {
+        replHistIdx = replHistory.length;
+        replInput.value = replDraft;
+      }
+      replInput.setSelectionRange(replInput.value.length, replInput.value.length);
+      return;
+    }
+    if (e.key === "Escape") {
+      e.preventDefault();
+      replInput.value = "";
+      cm.focus();
+    }
+  });
+
+  commentBtn.addEventListener("click", function () {
+    var n = commentLines();
+    cm.focus();
+    if (n) setState("ok", "已注释 " + n + " 行");
+    else setState("", "这几行已经注释过了");
+  });
+  uncommentBtn.addEventListener("click", function () {
+    var n = uncommentLines();
+    cm.focus();
+    if (n) setState("ok", "已取消注释 " + n + " 行");
+    else setState("", "这几行没有可取消的注释");
+  });
+
+  /* ============ 格式化 / 压缩 ============ */
+  function byteLen(s) {
+    try { return new Blob([s]).size; } catch (e) { return s.length; }
+  }
+  function fmtSize(n) {
+    if (n < 1024) return n + " B";
+    if (n < 1024 * 1024) return (n / 1024).toFixed(1) + " KB";
+    return (n / 1024 / 1024).toFixed(2) + " MB";
+  }
+
+  // 整篇替换，保留光标字符偏移，并且只算一步撤销
+  function replaceWhole(next, label) {
+    var idx = cm.indexFromPos(cm.getCursor());
+    cm.operation(function () {
+      var last = cm.lastLine();
+      cm.replaceRange(next, CodeMirror.Pos(0, 0), CodeMirror.Pos(last, cm.getLine(last).length), "+format");
+      cm.setCursor(cm.posFromIndex(Math.min(idx, next.length)));
+    });
+    lintNow();
+    updateCount();
+    setState("ok", label);
+  }
+
+  // 语法有错时不做破坏性改写，直接把光标送到出错位置
+  function blockOnSyntax(bad, action) {
+    var line = Math.min(bad.line, cm.lineCount() - 1);
+    cm.setCursor({ line: line, ch: bad.col });
+    cm.scrollIntoView(null, 80);
+    cm.focus();
+    setState("err", action + "中止 · 第 " + (bad.line + 1) + " 行：" + bad.summary);
+  }
+
+  function formatCode() {
+    var code = cm.getValue();
+    if (!code.trim()) { setState("", "没有可格式化的内容"); return; }
+    var bad = checkCode(code);
+    if (bad) { blockOnSyntax(bad, "格式化"); return; }
+    if (typeof window.js_beautify !== "function") { setState("err", "格式化组件未加载"); return; }
+
+    var out;
+    try {
+      out = window.js_beautify(code, {
+        indent_size: 2,
+        indent_char: " ",
+        brace_style: "collapse",
+        preserve_newlines: true,
+        max_preserve_newlines: 2,
+        end_with_newline: false,
+        space_in_paren: false,
+        space_in_empty_paren: false,
+        keep_array_indentation: false,
+        wrap_line_length: 0,
+        break_chained_methods: false
+      });
+    } catch (e) {
+      setState("err", "格式化失败：" + (e.message || e));
+      return;
+    }
+
+    if (out === code) { setState("", "已经是格式化状态"); return; }
+    var before = code.split("\n").length;
+    var after = out.split("\n").length;
+    replaceWhole(out, "已格式化 · " + before + " 行 → " + after + " 行");
+  }
+
+  // 用 acorn 的 tokenizer 重排，天然不会误伤字符串、模板、正则里的空白
+  function isWordChar(ch) {
+    if (!ch) return false;
+    var c = ch.charCodeAt(0);
+    return (c >= 48 && c <= 57) || (c >= 65 && c <= 90) || (c >= 97 && c <= 122) ||
+      ch === "_" || ch === "$" || c > 127;
+  }
+
+  function needSpace(a, b) {
+    var x = a.charAt(a.length - 1);
+    var y = b.charAt(0);
+    if (isWordChar(x) && isWordChar(y)) return true;        // a b / return x / 1 in
+    if (x >= "0" && x <= "9" && y === ".") return true;     // 1 .toString()
+    if ((x === "+" && y === "+") || (x === "-" && y === "-")) return true; // a+ +b
+    if (x === "/" && (y === "/" || y === "*")) return true; // 避免拼成注释
+    if (x === "<" && y === "!") return true;                // 避免 <!--
+    if (x === "-" && y === ">") return true;                // 避免 -->
+    if (x === "?" && y === ".") return true;                // a ? .5 : b 不能变成 a?.5
+    return false;
+  }
+
+  // 这些 token 可以结束一条语句 → 跟在后面的换行可能是 ASI 的分号，不能删
+  var ASI_END = {
+    "name": 1, "num": 1, "string": 1, "regexp": 1, "template": 1, "`": 1,
+    ")": 1, "]": 1, "}": 1, "++/--": 1,
+    "true": 1, "false": 1, "null": 1, "this": 1, "super": 1
+  };
+  // 受限产生式：return/throw/break/continue/yield 后面换行会强制插入分号
+  var ASI_RESTRICTED = { "return": 1, "throw": 1, "break": 1, "continue": 1, "yield": 1 };
+  // 这些 token 不可能开启新语句，后面的换行一定是可省的
+  var JOIN_NEXT = { ".": 1, ",": 1, ")": 1, "]": 1, "}": 1, ";": 1, ":": 1, "?": 1, "else": 1, "catch": 1, "finally": 1 };
+
+  function canJoinLine(prevLabel, nextLabel) {
+    if (ASI_RESTRICTED[prevLabel]) return false;
+    if (JOIN_NEXT[nextLabel]) return true;
+    return !ASI_END[prevLabel];
+  }
+
+  function minifyTokens(code) {
+    var tk = acorn.tokenizer(code, {
+      ecmaVersion: "latest",
+      allowHashBang: true,
+      allowAwaitOutsideFunction: true,
+      allowReturnOutsideFunction: true
+    });
+    var out = "";
+    var prevEnd = -1;
+    var prevPiece = "";
+    var prevLabel = "";
+    for (;;) {
+      var t = tk.getToken();
+      if (!t || !t.type || t.type.label === "eof") break;
+      var piece = code.slice(t.start, t.end);
+      var label = t.type.label;
+      if (prevEnd >= 0) {
+        var gap = code.slice(prevEnd, t.start);
+        if (gap.indexOf("\n") >= 0 && !canJoinLine(prevLabel, label)) out += "\n";
+        else if (needSpace(prevPiece, piece)) out += " ";
+      }
+      out += piece;
+      prevEnd = t.end;
+      prevPiece = piece;
+      prevLabel = label;
+    }
+    return out;
+  }
+
+  function minifyCode() {
+    var code = cm.getValue();
+    if (!code.trim()) { setState("", "没有可压缩的内容"); return; }
+    var bad = checkCode(code);
+    if (bad) { blockOnSyntax(bad, "压缩"); return; }
+
+    var out;
+    try {
+      out = minifyTokens(code);
+    } catch (e) {
+      setState("err", "压缩失败：" + (e.message || e));
+      return;
+    }
+    if (out.length >= code.length) { setState("", "已经是压缩状态"); return; }
+
+    var before = byteLen(code);
+    var after = byteLen(out);
+    var pct = Math.round((1 - after / before) * 100);
+    replaceWhole(out, "已压缩 · " + fmtSize(before) + " → " + fmtSize(after) + "（-" + pct + "%）");
+  }
+
+  formatBtn.addEventListener("click", formatCode);
+  minifyBtn.addEventListener("click", minifyCode);
+
+  /* ============ 转 Bookmark JS ============ */
+  // 书签链接必须是一行，而浏览器在执行 javascript: 链接前会把整串百分号解码一次
+  // （在 Chrome 上实测：%0A→换行、%23→#、%25→%、%20→空格、中文原样通过）。
+  // 由此三条规则：
+  //   1) % 和 # 必须转义，否则解码后会被改写；
+  //   2) 模板字符串 / 多行注释里的换行也写成 %0A，解码后还原；
+  //   3) // 行注释一旦失去换行就会吃掉后面所有代码，改写成 /* */。
+  // 去掉换行的地方按 ASI 语义补 "; "，最后用 acorn 重新解析并比对 AST，
+  // 一旦不一致就退回保守模式（换行全部以 %0A 保留，语义与原文完全一致）。
+  var BM_TERM = {
+    ExpressionStatement: 1, VariableDeclaration: 1, ReturnStatement: 1, ThrowStatement: 1,
+    BreakStatement: 1, ContinueStatement: 1, DebuggerStatement: 1, DoWhileStatement: 1,
+    PropertyDefinition: 1, ImportDeclaration: 1, ExportNamedDeclaration: 1,
+    ExportDefaultDeclaration: 1, ExportAllDeclaration: 1
+  };
+
+  function bmEsc(s) {
+    return String(s).replace(/%/g, "%25").replace(/#/g, "%23").replace(/\r\n|\r|\n/g, "%0A");
+  }
+
+  function bmDecode(s) {
+    return String(s).replace(/%([0-9a-fA-F]{2})/g, function (m, hex) {
+      var c = parseInt(hex, 16);
+      if (c === 0x23 || c === 0x25 || c === 0x20 || c === 0x0a || c === 0x0d) return String.fromCharCode(c);
+      return m;
+    });
+  }
+
+  function bmParseAst(code) {
+    if (typeof acorn === "undefined" || !acorn.parse) return null;
+    var opts = {
+      ecmaVersion: "latest",
+      allowHashBang: true,
+      allowAwaitOutsideFunction: true,
+      allowReturnOutsideFunction: true
+    };
+    try { return acorn.parse(code, opts); } catch (e) {
+      try {
+        opts.sourceType = "module";
+        return acorn.parse(code, opts);
+      } catch (e2) { return null; }
+    }
+  }
+
+  // 收集「语句结束」的位置：只有这些位置被删掉的换行才可能承担 ASI 分号
+  function bmStmtEnds(prog) {
+    var ends = Object.create(null);
+    (function walk(n) {
+      if (!n || typeof n !== "object") return;
+      if (Array.isArray(n)) {
+        for (var i = 0; i < n.length; i++) walk(n[i]);
+        return;
+      }
+      if (typeof n.type === "string" && BM_TERM[n.type]) ends[n.end] = 1;
+      for (var k in n) {
+        if (k === "loc" || k === "start" || k === "end" || k === "range") continue;
+        var v = n[k];
+        if (v && typeof v === "object") walk(v);
+      }
+    })(prog);
+    return ends;
+  }
+
+  function bmCompact(code, prog) {
+    var comments = [];
+    var tk = acorn.tokenizer(code, {
+      ecmaVersion: "latest",
+      allowHashBang: true,
+      allowAwaitOutsideFunction: true,
+      allowReturnOutsideFunction: true,
+      onComment: comments
+    });
+    var items = [];
+    for (;;) {
+      var t = tk.getToken();
+      if (!t || !t.type || t.type.label === "eof") break;
+      items.push({ kind: "t", start: t.start, end: t.end, label: t.type.label, text: code.slice(t.start, t.end) });
+    }
+    for (var i = 0; i < comments.length; i++) {
+      var c = comments[i];
+      items.push({
+        kind: "c",
+        start: c.start,
+        end: c.end,
+        text: c.type === "Block"
+          ? code.slice(c.start, c.end)
+          : "/*" + String(c.value).replace(/\*\//g, "* /") + "*/"
+      });
+    }
+    items.sort(function (a, b) { return a.start - b.start; });
+
+    var ends = bmStmtEnds(prog);
+    var out = "";
+    var prevEnd = 0;
+    var lastTokEnd = -1;
+    var lastTokLabel = "";
+    var lastPiece = "";
+    var sawNL = false;
+
+    for (var j = 0; j < items.length; j++) {
+      var it = items[j];
+      if (it.start > prevEnd && code.slice(prevEnd, it.start).indexOf("\n") >= 0) sawNL = true;
+
+      if (it.kind === "c") {
+        // 分号要补在注释前面，补在后面就被块注释隔开了不算问题，但会读起来怪
+        if (sawNL && ends[lastTokEnd] && lastTokLabel !== ";") {
+          out += ";";
+          ends[lastTokEnd] = 0;
+        }
+        if (out && !/[([]$/.test(lastPiece)) out += " ";
+        out += it.text;
+        prevEnd = it.end;
+        lastPiece = it.text;
+        sawNL = false;
+        continue;
+      }
+
+      if (sawNL) {
+        if (ends[lastTokEnd] && lastTokLabel !== ";") out += ";";
+        else if (out && needSpace(lastPiece, it.text)) out += " ";
+      } else if (out && needSpace(lastPiece, it.text)) {
+        out += " ";
+      }
+      out += it.text;
+      prevEnd = it.end;
+      lastTokEnd = it.end;
+      lastTokLabel = it.label;
+      lastPiece = it.text;
+      sawNL = false;
+    }
+    return out;
+  }
+
+  function bmCanon(n) {
+    if (!n || typeof n !== "object") return typeof n === "bigint" ? n.toString() : n;
+    if (Array.isArray(n)) {
+      var arr = [];
+      for (var i = 0; i < n.length; i++) arr.push(bmCanon(n[i]));
+      return arr;
+    }
+    var o = {};
+    for (var k in n) {
+      if (k === "start" || k === "end" || k === "loc" || k === "range") continue;
+      var v = n[k];
+      o[k] = (v && typeof v === "object") ? bmCanon(v) : (typeof v === "bigint" ? v.toString() : v);
+    }
+    return o;
+  }
+
+  function bmSameAst(a, b) {
+    var A = bmParseAst(a);
+    var B = bmParseAst(b);
+    if (!A || !B) return false;
+    try { return JSON.stringify(bmCanon(A)) === JSON.stringify(bmCanon(B)); }
+    catch (e) { return false; }
+  }
+
+  function bmBuild(code, wrap) {
+    if (typeof acorn === "undefined" || !acorn.parse) return { error: "语法解析组件未加载" };
+    var ast = bmParseAst(code);
+    if (!ast) return { error: "当前代码语法有错，先修好再转" };
+    if (ast.sourceType === "module") return { error: "import / export 属于模块语法，浏览器不会在书签里执行" };
+
+    var body = null;
+    try { body = bmCompact(code, ast); } catch (e) { body = null; }
+    var lossy = !body || !bmSameAst(code, body);
+    if (lossy) body = code;
+
+    var url = "javascript:" + (wrap ? "(function(){" + body + "})();void 0" : body + ";void 0");
+    return { url: bmEsc(url), lossy: lossy };
+  }
+
+  // 行尾的块注释还原成 // ，转回来更像手写代码
+  function bmCommentBack(line) {
+    var m = /^(\s*)\/\*([\s\S]*)\*\/\s*$/.exec(line);
+    if (m && m[2].indexOf("*/") < 0) return m[1] + "//" + (m[2].trim() ? " " + m[2].trim() : "");
+    m = /^(.*\S)\s+\/\*([\s\S]*)\*\/\s*(;?)\s*$/.exec(line);
+    if (m && m[2].indexOf("*/") < 0) {
+      return m[1] + m[3] + " //" + (m[2].trim() ? " " + m[2].trim() : "");
+    }
+    return line;
+  }
+
+  function bmUnwrap(text) {
+    var t = String(text).trim().replace(/^javascript:/i, "");
+    t = bmDecode(t);
+    t = t.replace(/;?\s*void\s+0\s*;?\s*$/, "");
+    var head = /^\s*\(\s*function\s*\(\s*\)\s*\{/;
+    var tail = /\}\s*\)\s*\(\s*\)\s*;?\s*$/;
+    if (head.test(t) && tail.test(t)) {
+      t = t.replace(head, "").replace(tail, "");
+    }
+    t = t.trim();
+    if (typeof window.js_beautify === "function") {
+      try {
+        t = window.js_beautify(t, {
+          indent_size: 2,
+          indent_char: " ",
+          brace_style: "collapse",
+          preserve_newlines: true,
+          max_preserve_newlines: 2,
+          end_with_newline: false,
+          space_in_paren: false,
+          space_in_empty_paren: false,
+          keep_array_indentation: false,
+          wrap_line_length: 0,
+          break_chained_methods: false
+        });
+      } catch (e) {}
+    }
+    return t.split("\n").map(bmCommentBack).join("\n");
+  }
+
+  function copyText(text, done) {
+    var ok = false;
+    try {
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "fixed";
+      ta.style.top = "-2000px";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, text.length);
+      ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+    } catch (e) { ok = false; }
+    if (ok) { done(true); return; }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { done(true); }, function () { done(false); });
+      return;
+    }
+    done(false);
+  }
+
+  var bmVeil = document.createElement("div");
+  bmVeil.className = "bm-veil";
+  bmVeil.innerHTML = [
+    '<div class="bm-card" role="dialog" aria-modal="true" aria-label="转成 Bookmark JS">',
+    '  <div class="bm-head">',
+    '    <b>转成 Bookmark JS</b>',
+    '    <span class="bm-sub">复制后粘到书签的「网址」栏，或直接拖到书签栏</span>',
+    '    <button class="bm-x" id="bmClose" title="关闭 · Esc">✕</button>',
+    '  </div>',
+    '  <textarea class="bm-code" id="bmCode" spellcheck="false" readonly></textarea>',
+    '  <div class="bm-meta">',
+    '    <label class="bm-opt"><input type="checkbox" id="bmWrap" checked><span>用 (function(){})() 包裹，避免污染页面全局、避免返回值覆盖页面</span></label>',
+    '    <span class="bm-stat" id="bmStat"></span>',
+    '  </div>',
+    '  <div class="bm-foot">',
+    '    <a class="bm-drag" id="bmDrag" href="javascript:void 0" draggable="true" title="按住拖到浏览器书签栏">拖我到书签栏</a>',
+    '    <span class="spacer"></span>',
+    '    <button class="bm-btn" id="bmRestore" title="把这段链接还原成可编辑代码">还原为代码</button>',
+    '    <button class="bm-btn primary" id="bmCopy">复制链接</button>',
+    '  </div>',
+    '  <div class="bm-hint" id="bmHint"></div>',
+    '</div>'
+  ].join("");
+  document.body.appendChild(bmVeil);
+
+  var bmCodeEl = document.getElementById("bmCode");
+  var bmStatEl = document.getElementById("bmStat");
+  var bmHintEl = document.getElementById("bmHint");
+  var bmWrapEl = document.getElementById("bmWrap");
+  var bmDragEl = document.getElementById("bmDrag");
+  var bmCopyEl = document.getElementById("bmCopy");
+  var bmRestoreEl = document.getElementById("bmRestore");
+  var bmOpenFlag = false;
+  var bmLastUrl = "";
+
+  function bmRender() {
+    var code = cm.getValue();
+    var r = bmBuild(code, bmWrapEl.checked);
+    if (r.error) {
+      bmLastUrl = "";
+      bmCodeEl.value = "";
+      bmCodeEl.style.height = "70px";
+      bmDragEl.setAttribute("href", "javascript:void 0");
+      bmStatEl.textContent = "";
+      bmHintEl.className = "bm-hint warnline";
+      bmHintEl.textContent = r.error;
+      return;
+    }
+    bmLastUrl = r.url;
+    bmCodeEl.value = r.url;
+    // 按内容行数自适应高度，短链接不留一大片空白
+    bmCodeEl.style.height = "0px";
+    var h = Math.min(220, Math.max(70, bmCodeEl.scrollHeight));
+    bmCodeEl.style.height = h + "px";
+    bmDragEl.setAttribute("href", r.url);
+    bmStatEl.textContent = code.split("\n").length + " 行 · " + fmtSize(byteLen(code)) +
+      " → " + r.url.length + " 字符";
+
+    var hint = [];
+    hint.push("<b>用法</b>：书签管理器里新建书签 → 名称随意 → 网址粘贴这一整串；或者直接把它拖到书签栏。");
+    hint.push("<b>注释</b>：全部保留。块注释原样，<code>//</code> 行注释改写成 <code>/* */</code>，因为书签链接只能是单行。");
+    hint.push("<b>改回来</b>：点「还原为代码」即可把链接变回可编辑代码，改完再转一次。");
+    if (r.lossy) {
+      hint.push('<span class="warnline">这段代码的换行位置比较特殊，已自动改用保守模式：换行以 %0A 原样保留，语义与原文完全一致。</span>');
+    }
+    if (!bmWrapEl.checked) {
+      hint.push('<span class="warnline">未包裹时顶层的 return 会报错，变量也会留在页面全局。</span>');
+    }
+    bmHintEl.className = "bm-hint";
+    bmHintEl.innerHTML = hint.join("<br>");
+  }
+
+  function bmOpenModal() {
+    var code = cm.getValue();
+    if (!code.trim()) { setState("", "没有可转换的内容"); return; }
+    var bad = checkCode(code);
+    if (bad) { blockOnSyntax(bad, "转 Bookmark"); return; }
+    bmOpenFlag = true;
+    bmVeil.classList.add("open");
+    bmRender();
+    bmCodeEl.focus();
+  }
+
+  function bmCloseModal(focusEditor) {
+    bmOpenFlag = false;
+    bmVeil.classList.remove("open");
+    bmDragEl.setAttribute("href", "javascript:void 0");
+    if (focusEditor !== false) cm.focus();
+  }
+
+  function bmToggle() {
+    if (bmOpenFlag) { bmCloseModal(); return; }
+    // 编辑器里已经是书签链接 → 直接还原，形成「转出去 / 改回来」的闭环
+    if (/^\s*javascript:/i.test(cm.getValue())) {
+      var back = bmUnwrap(cm.getValue());
+      if (!back.trim()) { setState("err", "这段内容没法还原"); return; }
+      replaceWhole(back, "已还原为可编辑代码，改完可以再转一次");
+      return;
+    }
+    bmOpenModal();
+  }
+
+  bmBtn.addEventListener("click", bmToggle);
+  bmWrapEl.addEventListener("change", bmRender);
+  document.getElementById("bmClose").addEventListener("click", function () { bmCloseModal(); });
+  bmVeil.addEventListener("mousedown", function (e) { if (e.target === bmVeil) bmCloseModal(); });
+  bmVeil.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+      e.preventDefault();
+      e.stopPropagation();
+      bmCloseModal();
+    }
+  });
+  bmDragEl.addEventListener("click", function (e) { e.preventDefault(); });
+  bmCopyEl.addEventListener("click", function () {
+    if (!bmLastUrl) return;
+    copyText(bmLastUrl, function (ok) {
+      if (ok) {
+        setState("ok", "已复制 javascript: 链接");
+        bmCopyEl.textContent = "已复制";
+        bmCopyEl.classList.add("on");
+        setTimeout(function () {
+          bmCopyEl.textContent = "复制链接";
+          bmCopyEl.classList.remove("on");
+        }, 1400);
+      } else {
+        setState("err", "复制失败，已全选，请按 Ctrl+C");
+        bmCodeEl.focus();
+        bmCodeEl.select();
+      }
+    });
+  });
+  bmRestoreEl.addEventListener("click", function () {
+    var text = bmCodeEl.value;
+    if (!text) return;
+    var back = bmUnwrap(text);
+    if (!back.trim()) { setState("err", "这段内容没法还原"); return; }
+    bmCloseModal(false);
+    replaceWhole(back, "已还原为可编辑代码，改完可以再转一次");
+  });
+
+  stopBtn.addEventListener("click", function () {
+    if (!running) return;
+    killFrame();
+    appendLine("sys", "已手动停止");
+    setState("", "已停止");
+  });
+  clearBtn.addEventListener("click", clearOutput);
+
+  var saveTimer = null;
+  function scheduleSave() {
+    clearTimeout(saveTimer);
+    saveState.textContent = "编辑中…";
+    saveTimer = setTimeout(persist, 500);
+  }
+
+  function persist() {
+    try {
+      localStorage.setItem(STORAGE_KEY, cm.getValue());
+      var t = new Date();
+      var hh = String(t.getHours()).padStart(2, "0");
+      var mm = String(t.getMinutes()).padStart(2, "0");
+      var ss = String(t.getSeconds()).padStart(2, "0");
+      saveState.textContent = "已自动保存 " + hh + ":" + mm + ":" + ss;
+    } catch (e) {
+      saveState.textContent = "自动保存不可用";
+    }
+  }
+
+  function download(name, text) {
+    var blob = new Blob([text], { type: "text/javascript;charset=utf-8" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () {
+      URL.revokeObjectURL(url);
+      a.remove();
+    }, 500);
+  }
+
+  function saveFile() {
+    download("script.js", cm.getValue());
+    setState("ok", "已导出 script.js");
+  }
+
+  saveBtn.addEventListener("click", saveFile);
+
+  function loadFile(f) {
+    var reader = new FileReader();
+    reader.onload = function () {
+      cm.setValue(String(reader.result || ""));
+      cm.clearHistory();
+      cm.setCursor({ line: 0, ch: 0 });
+      updateCount();
+      lintNow();
+      setState("ok", "已载入 " + f.name);
+    };
+    reader.onerror = function () { setState("err", "读取失败：" + f.name); };
+    reader.readAsText(f, "utf-8");
+  }
+
+  openBtn.addEventListener("click", function () { fileInput.click(); });
+  fileInput.addEventListener("change", function () {
+    var f = fileInput.files && fileInput.files[0];
+    if (f) loadFile(f);
+    fileInput.value = "";
+  });
+
+  /* ============ 拖放打开 .js ============ */
+  var dragDepth = 0;
+  function hasFiles(e) {
+    var dt = e.dataTransfer;
+    if (!dt) return false;
+    var types = dt.types;
+    if (types) {
+      for (var i = 0; i < types.length; i++) {
+        if (types[i] === "Files") return true;
+      }
+    }
+    return false;
+  }
+  window.addEventListener("dragenter", function (e) {
+    if (!hasFiles(e)) return;
+    e.preventDefault();
+    dragDepth++;
+    dropVeil.classList.add("on");
+  });
+  window.addEventListener("dragover", function (e) {
+    if (!hasFiles(e)) return;
+    e.preventDefault();
+    try { e.dataTransfer.dropEffect = "copy"; } catch (err) {}
+  });
+  window.addEventListener("dragleave", function (e) {
+    if (!hasFiles(e)) return;
+    dragDepth = Math.max(0, dragDepth - 1);
+    if (!dragDepth) dropVeil.classList.remove("on");
+  });
+  window.addEventListener("drop", function (e) {
+    if (!hasFiles(e)) return;
+    e.preventDefault();
+    dragDepth = 0;
+    dropVeil.classList.remove("on");
+    var f = e.dataTransfer.files && e.dataTransfer.files[0];
+    if (f) loadFile(f);
+  });
+
+  /* ============ 主题 ============ */
+  var THEME_KEY = "js-playground.theme.v1";
+  function applyTheme(name) {
+    var dark = name === "dark";
+    document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+    themeBtn.textContent = dark ? "浅色" : "深色";
+    themeBtn.setAttribute("data-tip", dark ? "切回浅色主题 · Ctrl+Shift+L" : "切换深色主题 · Ctrl+Shift+L");
+  }
+  function toggleTheme() {
+    var next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    applyTheme(next);
+    try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
+    cm.refresh();
+  }
+  themeBtn.addEventListener("click", toggleTheme);
+
+  /* ============ 字号 ============ */
+  function setFont(v, save) {
+    var next = Math.max(FONT_MIN, Math.min(FONT_MAX, Math.round(v / FONT_STEP) * FONT_STEP));
+    fontNow = next;
+    cm.getWrapperElement().style.fontSize = next + "px";
+    fontVal.textContent = next.toFixed(1);
+    cm.refresh();
+    if (save !== false) {
+      try { localStorage.setItem(FONT_KEY, String(next)); } catch (e) {}
+    }
+  }
+  fontDec.addEventListener("click", function () { setFont(fontNow - FONT_STEP); });
+  fontInc.addEventListener("click", function () { setFont(fontNow + FONT_STEP); });
+
+  document.addEventListener("keydown", function (e) {
+    if (bmOpenFlag) return;
+    if (e.key === "F3" && srchState.open && !e.defaultPrevented) {
+      e.preventDefault();
+      srchStep(e.shiftKey ? -1 : 1);
+      return;
+    }
+    if (!(e.ctrlKey || e.metaKey)) return;
+    var k = (e.key || "").toLowerCase();
+    var t = e.target;
+    var wrap = cm.getWrapperElement();
+    // 焦点在编辑器里由 extraKeys 处理；在查找框里则要接管（否则 Ctrl+G 无效）
+    var inEditor = !!(t && wrap.contains(t) && !(t.closest && t.closest(".CodeMirror-dialog")));
+
+    if (e.shiftKey) {
+      if (k === "l") {
+        e.preventDefault();
+        toggleTheme();
+        return;
+      }
+      if (inEditor) return;
+      if (k === "f") {
+        e.preventDefault();
+        openSearch();
+      } else if (k === ">" || k === ".") {
+        e.preventDefault();
+        setFont(fontNow + FONT_STEP);
+      } else if (k === "<" || k === ",") {
+        e.preventDefault();
+        setFont(fontNow - FONT_STEP);
+      }
+      return;
+    }
+
+    if (inEditor) return;
+    if (k === "f" || k === "h") {
+      e.preventDefault();
+      openSearch();
+    } else if (k === "g") {
+      e.preventDefault();
+      editorCommand("jumpToLine");
+    }
+  });
+
+  /* ============ 查找 / 替换 ============ */
+  // CodeMirror 自带的 replace 是"两段式"对话框：先输查询、回车、再输替换文本，
+  // 看上去和查找框没区别，所以这里自建一个双栏面板，配合 cm.getSearchCursor 工作。
+  var SRCH_MARK_CAP = 400;
+
+  var srchPanel = document.createElement("div");
+  srchPanel.className = "srch-panel";
+  srchPanel.innerHTML = [
+    '<div class="srch-row">',
+    '  <input class="srch-input" id="srchFind" type="text" placeholder="查找" spellcheck="false" autocomplete="off">',
+    '  <span class="srch-count" id="srchCount"></span>',
+    '  <button class="srch-ico" id="srchPrev" title="上一个 · Shift+Enter">↑</button>',
+    '  <button class="srch-ico" id="srchNext" title="下一个 · Enter">↓</button>',
+    '  <button class="srch-ico" id="srchCase" title="区分大小写">Aa</button>',
+    '  <button class="srch-ico" id="srchClose" title="关闭 · Esc">✕</button>',
+    '</div>',
+    '<div class="srch-row">',
+    '  <input class="srch-input" id="srchRepl" type="text" placeholder="替换为" spellcheck="false" autocomplete="off">',
+    '  <button class="srch-btn" id="srchReplace" title="替换当前 · Enter">替换</button>',
+    '  <button class="srch-btn" id="srchReplaceAll" title="全部替换 · Ctrl+Alt+Enter">全部替换</button>',
+    '</div>'
+  ].join("");
+  var editorWrap = document.querySelector(".editor-wrap");
+  editorWrap.appendChild(srchPanel);
+
+  // 编辑区窄的时候飘窗会盖住大半个代码，改成在编辑区上方停靠
+  function srchPlace() {
+    var pane = editorWrap.parentNode;
+    if (editorWrap.clientWidth < 560) {
+      if (srchPanel.parentNode !== pane) pane.insertBefore(srchPanel, editorWrap);
+      srchPanel.classList.add("docked");
+    } else {
+      if (srchPanel.parentNode !== editorWrap) editorWrap.appendChild(srchPanel);
+      srchPanel.classList.remove("docked");
+    }
+  }
+  window.addEventListener("resize", function () {
+    if (srchState.open) srchPlace();
+  });
+
+  var srchFind = document.getElementById("srchFind");
+  var srchRepl = document.getElementById("srchRepl");
+  var srchCount = document.getElementById("srchCount");
+  var srchCaseBtn = document.getElementById("srchCase");
+  var srchPrevBtn = document.getElementById("srchPrev");
+  var srchNextBtn = document.getElementById("srchNext");
+  var srchCloseBtn = document.getElementById("srchClose");
+  var srchReplaceBtn = document.getElementById("srchReplace");
+  var srchReplaceAllBtn = document.getElementById("srchReplaceAll");
+
+  var srchState = { open: false, caseSensitive: false, matches: [], idx: -1, marks: [], skip: false };
+  var srchTimer = null;
+
+  // 支持 /正则/flags 写法；普通文本走字符串搜索（可切换大小写敏感）
+  function srchBuild(raw) {
+    if (raw.charAt(0) === "/") {
+      var last = raw.lastIndexOf("/");
+      if (last > 0) {
+        try {
+          var flags = raw.slice(last + 1).replace(/[gy]/g, "");
+          return { type: "regex", value: new RegExp(raw.slice(1, last), flags + "g") };
+        } catch (e) {
+          return { type: "bad" };
+        }
+      }
+    }
+    return { type: "string", value: raw };
+  }
+
+  function srchClearMarks() {
+    for (var i = 0; i < srchState.marks.length; i++) srchState.marks[i].clear();
+    srchState.marks = [];
+  }
+
+  function srchFirstAtOrAfter(pos) {
+    for (var i = 0; i < srchState.matches.length; i++) {
+      if (CodeMirror.cmpPos(srchState.matches[i].from, pos) >= 0) return i;
+    }
+    return 0;
+  }
+
+  function srchRender() {
+    var n = srchState.matches.length;
+    if (!srchFind.value) {
+      srchCount.textContent = "";
+      srchCount.className = "srch-count";
+      return;
+    }
+    if (!n) {
+      srchCount.textContent = "0/0";
+      srchCount.className = "srch-count none";
+      return;
+    }
+    srchCount.textContent = (srchState.idx + 1) + "/" + n;
+    srchCount.className = "srch-count";
+  }
+
+  function srchSelectCurrent(scroll) {
+    if (srchState.idx < 0 || !srchState.matches.length) return;
+    var m = srchState.matches[srchState.idx];
+    cm.setSelection(m.from, m.to);
+    if (scroll !== false) cm.scrollIntoView({ from: m.from, to: m.to }, 60);
+  }
+
+  function srchScan(keepIdx) {
+    srchClearMarks();
+    var prev = keepIdx ? srchState.idx : -1;
+    srchState.matches = [];
+    srchState.idx = -1;
+
+    var raw = srchFind.value;
+    if (!raw) { srchRender(); return; }
+
+    var built = srchBuild(raw);
+    var cursor;
+    try {
+      if (built.type === "bad") throw new Error("bad regexp");
+      cursor = cm.getSearchCursor(
+        built.value,
+        CodeMirror.Pos(0, 0),
+        built.type === "string" && !srchState.caseSensitive
+      );
+    } catch (e) {
+      srchCount.textContent = "正则错误";
+      srchCount.className = "srch-count none";
+      return;
+    }
+
+    var list = [];
+    var guard = 0;
+    while (cursor.findNext()) {
+      list.push({ from: cursor.from(), to: cursor.to() });
+      if (++guard >= 5000) break;
+    }
+    srchState.matches = list;
+
+    // 高亮全部命中（上限保护），当前命中用选区表示，移动时不重绘
+    var cap = Math.min(list.length, SRCH_MARK_CAP);
+    cm.operation(function () {
+      for (var i = 0; i < cap; i++) {
+        srchState.marks.push(cm.markText(list[i].from, list[i].to, { className: "cm-srch-hit" }));
+      }
+    });
+
+    if (!list.length) { srchRender(); return; }
+    srchState.idx = (keepIdx && prev >= 0)
+      ? Math.min(prev, list.length - 1)
+      : srchFirstAtOrAfter(cm.getCursor("from"));
+    srchSelectCurrent(true);
+    srchRender();
+  }
+
+  function srchStep(dir) {
+    if (!srchFind.value) { srchFind.focus(); return; }
+    if (!srchState.matches.length) {
+      srchScan(false);
+      return;
+    }
+    var n = srchState.matches.length;
+    srchState.idx = srchState.idx < 0 ? 0 : ((srchState.idx + dir) % n + n) % n;
+    srchSelectCurrent(true);
+    srchRender();
+  }
+
+  function srchGo(i) {
+    var n = srchState.matches.length;
+    if (!n) { srchState.idx = -1; srchRender(); return; }
+    srchState.idx = ((i % n) + n) % n;
+    srchSelectCurrent(true);
+    srchRender();
+  }
+
+  // 正则模式下支持 $1..$9 反向引用
+  function srchExpanded(text, from, to, built) {
+    if (built.type !== "regex") return text;
+    var m = cm.getRange(from, to).match(new RegExp(built.value.source, built.value.flags.replace(/[gy]/g, "")));
+    if (!m) return text;
+    return text.replace(/\$(\d)/g, function (all, d) {
+      var g = m[Number(d)];
+      return g == null ? "" : g;
+    });
+  }
+
+  function srchReplaceOne() {
+    if (!srchFind.value) { srchFind.focus(); return; }
+    if (!srchState.matches.length) srchScan(false);
+    if (!srchState.matches.length) return;
+
+    var i = srchState.idx < 0 ? 0 : srchState.idx;
+    var m = srchState.matches[i];
+    var built = srchBuild(srchFind.value);
+    var text = srchExpanded(srchRepl.value, m.from, m.to, built);
+
+    srchState.skip = true;
+    cm.replaceRange(text, m.from, m.to);
+    srchState.skip = false;
+
+    srchScan(true);
+    if (srchState.matches.length) srchGo(Math.min(i, srchState.matches.length - 1));
+    setState("ok", "已替换 1 处");
+  }
+
+  function srchReplaceAll() {
+    if (!srchFind.value) { srchFind.focus(); return; }
+    if (!srchState.matches.length) srchScan(false);
+    if (!srchState.matches.length) { setState("", "没有可替换的内容"); return; }
+
+    var list = srchState.matches.slice();
+    var built = srchBuild(srchFind.value);
+    var text = srchRepl.value;
+
+    srchState.skip = true;
+    cm.operation(function () {
+      // 从后往前换，避免前面的替换让后面的位置失效
+      for (var i = list.length - 1; i >= 0; i--) {
+        cm.replaceRange(srchExpanded(text, list[i].from, list[i].to, built), list[i].from, list[i].to);
+      }
+    });
+    srchState.skip = false;
+
+    srchScan(false);
+    setState("ok", "已替换 " + list.length + " 处");
+  }
+
+  function scheduleSearchRescan() {
+    if (!srchState.open || srchState.skip) return;
+    clearTimeout(srchTimer);
+    srchTimer = setTimeout(function () { srchScan(true); }, 120);
+  }
+
+  function openSearch() {
+    closeDialogs();
+    srchPlace();
+    srchPanel.classList.add("open");
+    srchState.open = true;
+    occClear();                 // 让位给黄色命中标记
+    var sel = cm.getSelection();
+    if (sel && sel.indexOf("\n") < 0 && sel.length <= 120) srchFind.value = sel;
+    srchFind.focus();
+    srchFind.select();
+    srchScan(false);
+  }
+
+  function closeSearch(focusEditor) {
+    if (!srchState.open) return;
+    srchPanel.classList.remove("open");
+    srchState.open = false;
+    clearTimeout(srchTimer);
+    srchClearMarks();
+    srchState.matches = [];
+    srchState.idx = -1;
+    occSchedule();              // 面板关了，把同名高亮接回来
+    if (focusEditor) cm.focus();
+  }
+
+  // 点击面板按钮不抢走输入框焦点
+  Array.prototype.forEach.call(srchPanel.querySelectorAll("button"), function (b) {
+    b.addEventListener("mousedown", function (e) { e.preventDefault(); });
+  });
+
+  srchFind.addEventListener("input", function () {
+    clearTimeout(srchTimer);
+    srchTimer = setTimeout(function () { srchScan(false); }, 70);
+  });
+  srchFind.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") { e.preventDefault(); srchStep(e.shiftKey ? -1 : 1); }
+    else if (e.key === "Escape") { e.preventDefault(); closeSearch(true); }
+    else if (e.key === "Tab" && !e.shiftKey) { e.preventDefault(); srchRepl.focus(); srchRepl.select(); }
+  });
+  srchRepl.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (e.ctrlKey || e.altKey || e.metaKey) srchReplaceAll(); else srchReplaceOne();
+    } else if (e.key === "Escape") { e.preventDefault(); closeSearch(true); }
+    else if (e.key === "Tab" && e.shiftKey) { e.preventDefault(); srchFind.focus(); srchFind.select(); }
+  });
+
+  srchPrevBtn.addEventListener("click", function () { srchStep(-1); });
+  srchNextBtn.addEventListener("click", function () { srchStep(1); });
+  srchCloseBtn.addEventListener("click", function () { closeSearch(true); });
+  srchReplaceBtn.addEventListener("click", srchReplaceOne);
+  srchReplaceAllBtn.addEventListener("click", srchReplaceAll);
+  srchCaseBtn.addEventListener("click", function () {
+    srchState.caseSensitive = !srchState.caseSensitive;
+    srchCaseBtn.classList.toggle("on", srchState.caseSensitive);
+    srchScan(false);
+  });
+
+  // 查找 / 跳行都复用同一个对话框位置，不先关掉旧的会叠在一起
+  function closeDialogs() {
+    var wrap = cm.getWrapperElement();
+    var nodes = wrap.querySelectorAll(".CodeMirror-dialog");
+    for (var i = 0; i < nodes.length; i++) {
+      if (nodes[i].parentNode) nodes[i].parentNode.removeChild(nodes[i]);
+    }
+    if (wrap.classList) wrap.classList.remove("dialog-opened");
+  }
+
+  function editorCommand(name) {
+    closeSearch(false);
+    closeDialogs();
+    cm.focus();
+    cm.execCommand(name);
+  }
+
+  findBtn.addEventListener("click", function () { openSearch(); });
+
+  splitter.addEventListener("mousedown", function (e) {
+    e.preventDefault();
+    splitter.classList.add("dragging");
+    var rect = mainEl.getBoundingClientRect();
+    var move = function (ev) {
+      var x = ev.clientX - rect.left;
+      x = Math.max(260, Math.min(rect.width - 260, x));
+      mainEl.style.gridTemplateColumns = x + "px 5px 1fr";
+    };
+    var up = function () {
+      splitter.classList.remove("dragging");
+      document.removeEventListener("mousemove", move);
+      document.removeEventListener("mouseup", up);
+      cm.refresh();
+    };
+    document.addEventListener("mousemove", move);
+    document.addEventListener("mouseup", up);
+  });
+
+  window.addEventListener("resize", function () { cm.refresh(); });
+
+  /* ============ 使用说明 ============ */
+  var helpVeil = document.getElementById("helpVeil");
+  var helpBody = document.getElementById("helpBody");
+  var helpBtn = document.getElementById("helpBtn");
+  var helpX = document.getElementById("helpX");
+  var helpOpenFlag = false;
+  var helpReturnFocus = null;
+
+  function helpOpen() {
+    if (helpOpenFlag) return;
+    if (bmOpenFlag) bmCloseModal();
+    closeSearch(false);
+    closeDialogs();
+    try { cm.closeHint(); } catch (e) {}
+    helpReturnFocus = document.activeElement;
+    helpOpenFlag = true;
+    helpVeil.classList.add("open");
+    helpBody.scrollTop = 0;
+    helpX.focus();
+  }
+
+  function helpClose() {
+    if (!helpOpenFlag) return;
+    helpOpenFlag = false;
+    helpVeil.classList.remove("open");
+    var back = helpReturnFocus;
+    helpReturnFocus = null;
+    if (back && back.focus && back !== document.body) {
+      try { back.focus(); } catch (e) { cm.focus(); }
+    } else {
+      cm.focus();
+    }
+  }
+
+  helpBtn.addEventListener("click", helpOpen);
+  helpX.addEventListener("click", helpClose);
+  helpVeil.addEventListener("mousedown", function (e) {
+    if (e.target === helpVeil) helpClose();
+  });
+
+  // 捕获阶段拦 Esc：焦点可能落在卡片空白处，冒泡阶段收不到
+  document.addEventListener("keydown", function (e) {
+    if (!helpOpenFlag) return;
+    if (e.key === "Escape") {
+      e.preventDefault();
+      e.stopPropagation();
+      helpClose();
+    }
+  }, true);
+
+  // 顶部分类直接跳到对应小节
+  var helpLinks = helpVeil.querySelectorAll(".hp-nav a");
+  for (var hn = 0; hn < helpLinks.length; hn++) {
+    helpLinks[hn].addEventListener("click", function (e) {
+      e.preventDefault();
+      var sec = document.getElementById(this.getAttribute("data-go"));
+      if (sec) sec.scrollIntoView({ block: "start" });
+    });
+  }
+
+  var draft = null;
+  var savedTheme = null;
+  var savedFont = NaN;
+  try {
+    draft = localStorage.getItem(STORAGE_KEY);
+    savedTheme = localStorage.getItem(THEME_KEY);
+    savedFont = parseFloat(localStorage.getItem(FONT_KEY));
+  } catch (e) {}
+
+  applyTheme(savedTheme === "dark" ? "dark" : "light");
+  if (savedFont >= FONT_MIN && savedFont <= FONT_MAX) setFont(savedFont, false);
+  else setFont(FONT_DEFAULT, false);
+
+  cm.setValue(draft && draft.trim() ? draft : DEMO);
+  cm.clearHistory();
+  cm.setCursor({ line: 0, ch: 0 });
+  updateCursor();
+  updateCount();
+  lintNow();
+  setState("", "就绪");
+  if (draft && draft.trim()) {
+    saveState.textContent = "已恢复草稿";
+  } else {
+    saveState.textContent = "自动保存已开启";
+  }
+})();
+</script>
+</body>
+</html>
